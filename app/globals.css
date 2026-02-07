@@ -1,0 +1,75 @@
+/* ========================================
+   🎨 Global Styles - Unified Brand Identity
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* 🎨 Brand Colors - استخدم هذه الألوان فقط */
+  --navy-dark: #0b2a41;      /* كحلي داكن - الخلفية الأساسية */
+  --petrol-blue: #004e64;    /* بترولي - الخلفيات الثانوية */
+  --teal: #25a18e;           /* تركوازي - الأزرار والعناوين */
+  --light-teal: #47d6ad;     /* تركوازي فاتح - التفاصيل */
+  --white-blue: #eafff9;     /* أبيض مائل للأزرق - النصوص */
+  
+  /* Gradients */
+  --bg-gradient: linear-gradient(135deg, #0b2a41 0%, #004e64 100%);
+  --sidebar-gradient: linear-gradient(180deg, #0b2a41, #004e64);
+}
+
+body {
+  font-family: "Cairo", sans-serif;
+  background: var(--bg-gradient);
+  color: var(--white-blue);
+  direction: rtl;
+  min-height: 100vh;
+}
+
+/* ========================================
+   🔤 Typography
+   ======================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--light-teal);
+}
+
+p {
+  line-height: 1.8;
+  color: var(--white-blue);
+}
+
+/* ========================================
+   🎯 Utility Classes
+   ======================================== */
+
+.page-container {
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  padding: 0;
+  direction: rtl;
+}
+
+.content-wrapper {
+  margin-right: 270px;
+  padding: 50px 30px;
+  max-width: 1200px;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .content-wrapper {
+    margin-right: 0;
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 30px 16px;
+  }
+}
