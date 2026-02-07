@@ -74,6 +74,9 @@ export default function LoginPage() {
             {loading ? "جاري الدخول..." : "دخول"}
           </button>
         </form>
+<div className="forgot-password">
+  <Link href="/forgot-password">نسيت كلمة المرور؟</Link>
+</div>
 
         <div className="footer-link">
           ما عندك حساب؟ <Link href="/signup">إنشاء حساب</Link>
@@ -240,6 +243,23 @@ export default function LoginPage() {
           background: rgba(71, 214, 173, 0.1); 
           color: #47D6AD; 
           border: 1px solid rgba(71, 214, 173, 0.2); 
+        }
+        .forgot-password {
+          margin-top: 15px;
+          text-align: center;
+        }
+
+        .forgot-password a {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 14px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+          color: #47D6AD;
+          text-decoration: underline;
         }
 
         .footer-link {
