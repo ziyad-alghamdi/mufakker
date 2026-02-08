@@ -16,9 +16,14 @@ export const metadata: Metadata = {
   title: "منصة مجتمع مفكِّر",
   description: "جميع الحقوق محفوظة لمجتمع مفكِّر",
   icons: {
-    icon: "/q1.png",
+    icon: [
+      { url: "/q1.png", type: "image/png", sizes: "32x32" },
+      { url: "/q1.png", type: "image/png", sizes: "192x192" },
+      { url: "/q1.png", type: "image/png", sizes: "512x512" },
+    ],
   },
 };
+
 
 export default function RootLayout({
   children,
