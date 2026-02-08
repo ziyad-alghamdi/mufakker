@@ -355,6 +355,86 @@ export default function Dashboard() {
           margin-top: 120px;
           padding-top: 40px;
         }
+
+        @media (max-width: 768px) {
+
+  .main-content {
+    padding: 16px;
+  }
+
+  .user-welcome h1 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .user-welcome p {
+    text-align: center;
+    font-size: 14px;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .glass-card {
+    padding: 20px;
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+}
+@media (max-width: 768px) {
+
+  .contact-item {
+    align-items: flex-start;
+  }
+
+  .academic-info {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .role-tag {
+    align-self: flex-start;
+  }
+
+}
+@media (max-width: 768px) {
+
+  textarea {
+    height: 100px;
+    font-size: 14px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    width: 100%;
+    padding: 12px;
+  }
+
+}
+@media (max-width: 768px) {
+
+  .toast-notification {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 20px;
+    width: calc(100% - 40px);
+    text-align: center;
+  }
+
+}
+
+
       `}</style>
     </div>
   );
