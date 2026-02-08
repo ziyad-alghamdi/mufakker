@@ -225,10 +225,31 @@ export default function SignupPage() {
 
         label { color: rgba(255, 255, 255, 0.7); font-size: 14px; font-weight: 600; padding-right: 5px; }
 
+        /* ابحث عن هذه القسم في الـ Style وحدثه */
+
         input, select {
-          padding: 14px 16px; background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
-          color: #ffffff; font-size: 15px; transition: 0.3s; outline: none;
+          padding: 14px 16px; 
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1); 
+          border-radius: 16px;
+          color: #ffffff; 
+          font-size: 15px; 
+          transition: 0.3s; 
+          outline: none;
+          cursor: pointer;
+        }
+
+        /* تنسيق قائمة الخيارات (المهم جداً) */
+        select option {
+          background-color: #0d1a21; /* لون خلفية غامق واحترافي */
+          color: #ffffff; /* نص أبيض */
+          padding: 10px;
+        }
+
+        /* لضمان عمل التنسيق على متصفحات معينة */
+        select:focus {
+          border-color: #47D6AD;
+          background: #0d1a21; /* يتغير اللون عند الفتح لضمان التناسق */
         }
 
         input:focus, select:focus { border-color: #47D6AD; background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 15px rgba(71, 214, 173, 0.15); }
