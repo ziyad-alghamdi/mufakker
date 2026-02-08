@@ -16,6 +16,10 @@ export default function SignupPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // حالات إظهار كلمات المرور
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const universities = [
     "جامعة الملك عبدالعزيز",
     "جامعة أم القرى",
@@ -31,19 +35,31 @@ export default function SignupPage() {
     "أخرى",
   ];
 
+  // أيقونة العين (SVG مدمج)
+  const EyeIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon-svg">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.644C3.413 8.245 7.248 5.5 12 5.5s8.587 2.745 9.964 6.178c.07.245.07.492 0 .737C20.587 15.755 16.752 18.5 12 18.5s-8.587-2.745-9.964-6.177z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+
+  const EyeSlashIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="icon-svg">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+    </svg>
+  );
+
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setMessage("");
     setLoading(true);
 
-    // 1. التحقق من صحة رقم الجوال
     if (!phone.startsWith("05") || phone.length !== 10) {
       setMessage("❌ رقم الجوال يجب أن يبدأ بـ 05 ويكون 10 خانات");
       setLoading(false);
       return;
     }
 
-    // 2. التحقق من تطابق كلمة المرور
     if (password !== confirmPassword) {
       setMessage("❌ كلمة المرور غير متطابقة");
       setLoading(false);
@@ -52,7 +68,6 @@ export default function SignupPage() {
 
     const finalUniversity = university === "أخرى" ? otherUniversity : university;
 
-    // 3. عملية التسجيل وإرسال البيانات كـ Metadata ليعالجها الـ Trigger
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -62,7 +77,6 @@ export default function SignupPage() {
           full_name_en: fullNameEn,
           phone: phone,
           university: finalUniversity,
-          // ملاحظة: الـ role والـ progress يتم وضعهم كـ default في قاعدة البيانات
         },
       },
     });
@@ -75,15 +89,8 @@ export default function SignupPage() {
 
     if (data.user) {
       setMessage("✔️ تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني لتأكيد الحساب.");
-      // تفريغ الحقول بعد النجاح (اختياري)
-      setFullNameAr("");
-      setFullNameEn("");
-      setEmail("");
-      setPhone("");
-      setPassword("");
-      setConfirmPassword("");
+      setFullNameAr(""); setFullNameEn(""); setEmail(""); setPhone(""); setPassword(""); setConfirmPassword("");
     }
-
     setLoading(false);
   }
 
@@ -106,92 +113,73 @@ export default function SignupPage() {
           <div className="input-row">
             <div className="input-group">
               <label>الاسم الثلاثي (عربي)</label>
-              <input
-                value={fullNameAr}
-                onChange={(e) => setFullNameAr(e.target.value)}
-                required
-                placeholder="زياد محمد الغامدي"
-              />
+              <input value={fullNameAr} onChange={(e) => setFullNameAr(e.target.value)} required placeholder="زياد محمد الغامدي" />
             </div>
             <div className="input-group">
               <label>الاسم الثلاثي (إنجليزي)</label>
-              <input
-                value={fullNameEn}
-                onChange={(e) => setFullNameEn(e.target.value)}
-                required
-                placeholder="Ziyad Mohammed"
-              />
+              <input value={fullNameEn} onChange={(e) => setFullNameEn(e.target.value)} required placeholder="Ziyad Mohammed" />
             </div>
           </div>
 
           <div className="input-row">
             <div className="input-group">
               <label>الإيميل</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="example@email.com"
-              />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="example@email.com" />
             </div>
             <div className="input-group">
               <label>رقم الجوال</label>
-              <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                placeholder="05XXXXXXXX"
-              />
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="05XXXXXXXX" />
             </div>
           </div>
 
           <div className="input-group">
             <label>الجامعة</label>
-            <select
-              value={university}
-              onChange={(e) => setUniversity(e.target.value)}
-              required
-            >
+            <select value={university} onChange={(e) => setUniversity(e.target.value)} required>
               <option value="">اختر الجامعة</option>
-              {universities.map((u) => (
-                <option key={u} value={u}>{u}</option>
-              ))}
+              {universities.map((u) => (<option key={u} value={u}>{u}</option>))}
             </select>
           </div>
 
           {university === "أخرى" && (
             <div className="input-group animate-fade">
               <label>اسم الجامعة الأخرى</label>
-              <input
-                value={otherUniversity}
-                onChange={(e) => setOtherUniversity(e.target.value)}
-                required
-                placeholder="اكتب اسم جامعتك هنا"
-              />
+              <input value={otherUniversity} onChange={(e) => setOtherUniversity(e.target.value)} required placeholder="اكتب اسم جامعتك هنا" />
             </div>
           )}
 
           <div className="input-row">
+            {/* حقل كلمة المرور */}
             <div className="input-group">
               <label>كلمة المرور</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="********"
-              />
+              <div className="password-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="********"
+                />
+                <button type="button" className="toggle-btn" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
+                </button>
+              </div>
             </div>
+
+            {/* حقل تأكيد كلمة المرور */}
             <div className="input-group">
               <label>تأكيد كلمة المرور</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                placeholder="********"
-              />
+              <div className="password-wrapper">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  placeholder="********"
+                />
+                <button type="button" className="toggle-btn" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                  {showConfirmPassword ? <EyeSlashIcon /> : <EyeIcon />}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -209,174 +197,70 @@ export default function SignupPage() {
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
         .auth-page {
-          min-height: 100vh;
-          width: 100%;
-          background-color: #031c26;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 40px 20px;
-          font-family: 'Cairo', sans-serif;
-          direction: rtl;
-          position: relative;
-          overflow: hidden;
+          min-height: 100vh; width: 100%; background-color: #020d12;
+          display: flex; justify-content: center; align-items: center;
+          padding: 40px 20px; font-family: 'Cairo', sans-serif;
+          direction: rtl; position: relative; overflow: hidden;
         }
 
-        .bg-overlay {
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(circle at 50% 50%, rgba(11, 42, 65, 0.4), #03151d);
-          z-index: 1;
-        }
-
-        .glow-top-right {
-          position: absolute;
-          width: 600px;
-          height: 600px;
-          top: -150px;
-          right: -150px;
-          background: radial-gradient(circle, rgba(71, 214, 173, 0.1) 0%, transparent 70%);
-          z-index: 2;
-        }
+        .bg-overlay { position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(11, 42, 65, 0.4), #03151d); z-index: 1; }
+        .glow-top-right { position: absolute; width: 600px; height: 600px; top: -150px; right: -150px; background: radial-gradient(circle, rgba(71, 214, 173, 0.1) 0%, transparent 70%); z-index: 2; }
 
         .glass-card {
-          position: relative;
-          z-index: 10;
-          width: 100%;
-          max-width: 650px;
-          background: rgba(255, 255, 255, 0.03);
-          backdrop-filter: blur(20px);
-          border-radius: 32px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          padding: 50px 40px;
-          box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+          position: relative; z-index: 10; width: 100%; max-width: 680px;
+          background: rgba(15, 34, 43, 0.65); backdrop-filter: blur(25px);
+          border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.08);
+          padding: 50px 40px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
         }
 
-        .title {
-          color: #ffffff;
-          font-size: 32px;
-          font-weight: 800;
-          text-align: center;
-          margin-bottom: 8px;
-        }
+        .title { color: #ffffff; font-size: 32px; font-weight: 900; text-align: center; margin-bottom: 8px; }
+        .subtitle { color: rgba(255, 255, 255, 0.4); text-align: center; margin-bottom: 35px; font-size: 15px; }
 
-        .subtitle {
-          color: rgba(255, 255, 255, 0.5);
-          text-align: center;
-          margin-bottom: 35px;
-          font-size: 15px;
-        }
+        .form { display: flex; flex-direction: column; gap: 20px; }
+        .input-row { display: flex; gap: 15px; }
+        .input-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        
+        .password-wrapper { position: relative; display: flex; align-items: center; }
+        .password-wrapper input { width: 100%; padding-left: 45px; }
 
-        .form {
-          display: flex;
-          flex-direction: column;
-          gap: 18px;
-        }
-
-        .input-row {
-          display: flex;
-          gap: 15px;
-        }
-
-        .input-group {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        label {
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 14px;
-          font-weight: 600;
-          padding-right: 5px;
-        }
+        label { color: rgba(255, 255, 255, 0.7); font-size: 14px; font-weight: 600; padding-right: 5px; }
 
         input, select {
-          padding: 14px 16px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 14px;
-          color: #ffffff;
-          font-size: 15px;
-          transition: all 0.3s ease;
-          outline: none;
+          padding: 14px 16px; background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
+          color: #ffffff; font-size: 15px; transition: 0.3s; outline: none;
         }
 
-        input:focus, select:focus {
-          border-color: #47D6AD;
-          background: rgba(255, 255, 255, 0.08);
-          box-shadow: 0 0 15px rgba(71, 214, 173, 0.15);
-        }
+        input:focus, select:focus { border-color: #47D6AD; background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 15px rgba(71, 214, 173, 0.15); }
 
-        select option {
-          background: #0b2a41;
-          color: #ffffff;
+        .toggle-btn {
+          position: absolute; left: 12px; background: none; border: none;
+          color: rgba(255, 255, 255, 0.3); cursor: pointer; display: flex; align-items: center; transition: 0.3s;
         }
+        .toggle-btn:hover { color: #47D6AD; }
+        .icon-svg { width: 20px; height: 20px; }
 
         .btn-submit {
-          margin-top: 15px;
-          padding: 16px;
-          background: linear-gradient(135deg, #47D6AD, #25A18E);
-          color: #031c26;
-          border: none;
-          border-radius: 16px;
-          font-size: 18px;
-          font-weight: 800;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 10px 20px rgba(71, 214, 173, 0.2);
+          margin-top: 15px; padding: 18px; background: #47D6AD;
+          color: #031c26; border: none; border-radius: 20px;
+          font-size: 18px; font-weight: 800; cursor: pointer; transition: 0.3s;
         }
+        .btn-submit:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
 
-        .btn-submit:hover:not(:disabled) {
-          transform: translateY(-2px);
-          filter: brightness(1.1);
-          box-shadow: 0 15px 30px rgba(71, 214, 173, 0.3);
-        }
+        .alert { padding: 14px; border-radius: 12px; text-align: center; font-weight: 700; margin-bottom: 20px; }
+        .alert.error { background: rgba(255, 82, 82, 0.1); color: #ff5252; }
+        .alert.success { background: rgba(71, 214, 173, 0.1); color: #47D6AD; }
 
-        .btn-submit:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        .alert {
-          padding: 14px;
-          border-radius: 12px;
-          text-align: center;
-          margin-bottom: 20px;
-          font-size: 14px;
-          font-weight: 700;
-        }
-
-        .alert.error { background: rgba(255, 82, 82, 0.15); color: #ff5252; border: 1px solid rgba(255, 82, 82, 0.3); }
-        .alert.success { background: rgba(71, 214, 173, 0.15); color: #47D6AD; border: 1px solid rgba(71, 214, 173, 0.3); }
-
-        .footer-text {
-          margin-top: 25px;
-          text-align: center;
-          color: rgba(255, 255, 255, 0.5);
-          font-size: 14px;
-        }
-
-        .footer-text a {
-          color: #47D6AD;
-          text-decoration: none;
-          font-weight: 700;
-        }
+        .footer-text { margin-top: 25px; text-align: center; color: rgba(255, 255, 255, 0.4); }
+        .footer-text a { color: #47D6AD; text-decoration: none; font-weight: 700; }
 
         @media (max-width: 600px) {
-          .input-row { flex-direction: column; gap: 18px; }
-          .glass-card { padding: 35px 20px; }
+          .input-row { flex-direction: column; gap: 20px; }
+          .glass-card { padding: 35px 20px; border-radius: 30px; }
         }
 
-        .animate-fade {
-          animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        .animate-fade { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </div>
   );
