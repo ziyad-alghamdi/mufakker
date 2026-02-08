@@ -96,24 +96,47 @@ export default function Sidebar() {
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
         .sidebar-toggle {
-          position: fixed;
-          top: 25px;
-          right: 25px;
-          z-index: 1000;
-          background: rgba(37, 161, 142, 0.2);
-          backdrop-filter: blur(10px);
-          color: #fff;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          width: 50px;
-          height: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 24px;
-          cursor: pointer;
-          transition: 0.3s;
-        }
+  position: fixed;
+  /* إضافة التباعد الآمن للهواتف الحديثة */
+  top: calc(25px + env(safe-area-inset-top, 0px));
+  right: calc(25px + env(safe-area-inset-right, 0px));
+  
+  /* رفع الـ z-index لأقصى درجة ممكنة لضمان التفوق على أي عنصر آخر */
+  z-index: 9999; 
+  
+  background: rgba(37, 161, 142, 0.9); /* زيادة الوضوح قليلاً */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* دعم متصفح سفاري على آيفون */
+  
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: 0.3s;
+  
+  /* منع ظهور حدود زرقاء عند النقر في الجوال */
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  
+  /* إضافة ظل لتمييز الزر عن الخلفيات الفاتحة */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* في حال كان الجوال بوضعية العرض الأفقي أو شاشات صغيرة جداً */
+@media (max-width: 480px) {
+  .sidebar-toggle {
+    top: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+  }
+}
 
         .sidebar-toggle:hover {
           background: #25a18e;
