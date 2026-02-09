@@ -88,9 +88,30 @@ export default function SignupPage() {
     }
 
     if (data.user) {
-      setMessage("✔️ تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني لتأكيد الحساب.");
-      setFullNameAr(""); setFullNameEn(""); setEmail(""); setPhone(""); setPassword(""); setConfirmPassword("");
-    }
+  setMessage("✔️ تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني لتأكيد الحساب.");
+
+  // إرسال إيميل الترحيب
+  fetch("/api/welcome", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+      fullName: fullNameAr,
+    }),
+  }).catch((err) => {
+    console.error("Welcome email failed:", err);
+  });
+
+  setFullNameAr("");
+  setFullNameEn("");
+  setEmail("");
+  setPhone("");
+  setPassword("");
+  setConfirmPassword("");
+}
+
     setLoading(false);
   }
 
