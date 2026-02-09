@@ -28,6 +28,11 @@ export default function Sidebar() {
     fetchUserRole();
   }, []);
 
+  // وظيفة لتبديل حالة السايد بار (فتح/إغلاق) عند الضغط على نفس الزر
+  const toggleSidebar = () => {
+    setOpen(!open);
+  };
+
   const links = [
     { name: "حسابي الشخصي", href: "/dashboard" },
     { name: "من نحن", href: "/about" },
@@ -37,58 +42,62 @@ export default function Sidebar() {
 
   return (
     <>
-      <button className="sidebar-toggle" onClick={() => setOpen(true)}>
-        <span className="burger-icon">☰</span>
+      {/* تم تغيير onClick لتنفيذ وظيفة التبديل toggleSidebar */}
+      <button className={`sidebar-toggle ${open ? "is-open" : ""}`} onClick={toggleSidebar}>
+        <span className="burger-icon">{open ? "✕" : "☰"}</span>
       </button>
 
+      {/* الإغلاق عند الضغط خارج السايد بار (Overlay) */}
       {open && <div className="overlay" onClick={() => setOpen(false)} />}
 
       <aside className={`sidebar ${open ? "open" : ""}`}>
-        <div className="logo-box">
-          <div className="logo-glow"></div>
-          <Image
-            src="/q1.png"
-            alt="Mufakker Logo"
-            width={160}
-            height={160}
-            priority
-            className="main-logo"
-          />
-        </div>
+        <div className="sidebar-scrollable-content">
+          <div className="logo-box">
+            <div className="logo-glow"></div>
+            <Image
+              src="/q1.png"
+              alt="Mufakker Logo"
+              width={160}
+              height={160}
+              priority
+              className="main-logo"
+            />
+          </div>
 
-        <nav className="nav-container">
-          <ul>
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={path === link.href ? "active" : ""}
-                  onClick={() => setOpen(false)}
-                >
-                  <span className="link-text">{link.name}</span>
-                  {path === link.href && <span className="active-dot"></span>}
-                </Link>
-              </li>
-            ))}
+          <nav className="nav-container">
+            <ul>
+              {links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={path === link.href ? "active" : ""}
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="link-text">{link.name}</span>
+                    {path === link.href && <span className="active-dot"></span>}
+                  </Link>
+                </li>
+              ))}
 
-            {role === "admin" && (
-              <li>
-                <Link
-                  href="/admin"
-                  className={`admin-link ${path === "/admin" ? "active" : ""}`}
-                  onClick={() => setOpen(false)}
-                >
-                  لوحة تحكم المسؤولين
-                </Link>
-              </li>
-            )}
-          </ul>
-        </nav>
+              {role === "admin" && (
+                <li>
+                  <Link
+                    href="/admin"
+                    className={`admin-link ${path === "/admin" ? "active" : ""}`}
+                    onClick={() => setOpen(false)}
+                  >
+                    لوحة تحكم المسؤولين
+                  </Link>
+                </li>
+              )}
+            </ul>
+          </nav>
 
-        <div className="sidebar-footer">
-          <Link href="/login" className="logout-link" onClick={() => setOpen(false)}>
-            <span>تسجيل الخروج</span>
-          </Link>
+          <div className="sidebar-footer">
+            <Link href="/login" className="logout-link" onClick={() => setOpen(false)}>
+              <span>تسجيل الخروج</span>
+            </Link>
+          </div>
         </div>
       </aside>
 
@@ -96,51 +105,32 @@ export default function Sidebar() {
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
         .sidebar-toggle {
-  position: fixed;
-  /* إضافة التباعد الآمن للهواتف الحديثة */
-  top: calc(25px + env(safe-area-inset-top, 0px));
-  right: calc(25px + env(safe-area-inset-right, 0px));
-  
-  /* رفع الـ z-index لأقصى درجة ممكنة لضمان التفوق على أي عنصر آخر */
-  z-index: 9999; 
-  
-  background: rgba(37, 161, 142, 0.9); /* زيادة الوضوح قليلاً */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* دعم متصفح سفاري على آيفون */
-  
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  cursor: pointer;
-  transition: 0.3s;
-  
-  /* منع ظهور حدود زرقاء عند النقر في الجوال */
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-  
-  /* إضافة ظل لتمييز الزر عن الخلفيات الفاتحة */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
+          position: fixed;
+          top: calc(25px + env(safe-area-inset-top, 0px));
+          right: calc(25px + env(safe-area-inset-right, 0px));
+          z-index: 9999; 
+          background: rgba(37, 161, 142, 0.9);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          color: #fff;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 12px;
+          width: 50px;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+          cursor: pointer;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+          transition: all 0.3s ease;
+          -webkit-tap-highlight-color: transparent;
+        }
 
-/* في حال كان الجوال بوضعية العرض الأفقي أو شاشات صغيرة جداً */
-@media (max-width: 480px) {
-  .sidebar-toggle {
-    top: 15px;
-    right: 15px;
-    width: 45px;
-    height: 45px;
-  }
-}
-
-        .sidebar-toggle:hover {
-          background: #25a18e;
-          transform: scale(1.05);
+        /* تغيير شكل الزر عند الفتح ليبرز أكثر أو يتغير لونه */
+        .sidebar-toggle.is-open {
+          background: #ef4444; /* لون أحمر خفيف عند الإغلاق أو يمكن تركه كما هو */
+          transform: rotate(90deg);
         }
 
         .overlay {
@@ -151,7 +141,6 @@ export default function Sidebar() {
           z-index: 1100;
         }
 
-        /* --- تعديل السايدبار لإضافة البرواز من الجهة اليسرى فقط --- */
         .sidebar {
           width: 300px;
           height: 100vh;
@@ -162,12 +151,9 @@ export default function Sidebar() {
           transform: translateX(100%);
           transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 1150;
-          padding: 40px 20px;
           display: flex;
           flex-direction: column;
           font-family: "Cairo", sans-serif;
-          
-          /* البرواز المضيء من الجهة اليسرى */
           border-left: 2px solid rgba(71, 214, 173, 0.5); 
           box-shadow: -5px 0 15px rgba(71, 214, 173, 0.1);
         }
@@ -176,6 +162,19 @@ export default function Sidebar() {
           transform: translateX(0);
         }
 
+        .sidebar-scrollable-content {
+          height: 100%;
+          overflow-y: auto;
+          overflow-x: hidden;
+          padding: 40px 20px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* ... باقي التنسيقات (Scrollbar, Logo, Nav, الخ) تبقى كما هي ... */
+        .sidebar-scrollable-content::-webkit-scrollbar { width: 5px; }
+        .sidebar-scrollable-content::-webkit-scrollbar-thumb { background: rgba(71, 214, 173, 0.2); border-radius: 10px; }
+
         .logo-box {
           position: relative;
           display: flex;
@@ -183,6 +182,7 @@ export default function Sidebar() {
           align-items: center;
           margin-bottom: 50px;
           padding: 20px 0;
+          flex-shrink: 0;
         }
 
         .logo-glow {
@@ -190,30 +190,12 @@ export default function Sidebar() {
           width: 140px;
           height: 140px;
           background: radial-gradient(circle, rgba(71, 214, 173, 0.15) 0%, transparent 70%);
-          z-index: 0;
         }
 
-        .main-logo {
-          position: relative;
-          z-index: 1;
-          filter: drop-shadow(0 0 10px rgba(71, 214, 173, 0.2));
-        }
-
-        .nav-container {
-          flex: 1;
-        }
-
-        .sidebar ul {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
+        .nav-container { flex: 1; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 
         .sidebar a {
-          position: relative;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -226,35 +208,15 @@ export default function Sidebar() {
           transition: 0.3s all ease;
         }
 
-        .sidebar a:hover {
-          background: rgba(255, 255, 255, 0.03);
-          color: #47d6ad;
-          padding-right: 25px;
-        }
-
-        .sidebar a.active {
-          background: linear-gradient(90deg, rgba(37, 161, 142, 0.2) 0%, transparent 100%);
-          color: #47d6ad;
-          font-weight: 700;
-          border-right: 4px solid #47d6ad;
-        }
-
-        .active-dot {
-          width: 6px;
-          height: 6px;
-          background: #47d6ad;
-          border-radius: 50%;
-          box-shadow: 0 0 10px #47d6ad;
-        }
-
-        .admin-link {
-          color: #f59e0b !important;
-        }
+        .sidebar a:hover { background: rgba(255, 255, 255, 0.03); color: #47d6ad; }
+        .sidebar a.active { background: linear-gradient(90deg, rgba(37, 161, 142, 0.2) 0%, transparent 100%); color: #47d6ad; border-right: 4px solid #47d6ad; }
+        .active-dot { width: 6px; height: 6px; background: #47d6ad; border-radius: 50%; box-shadow: 0 0 10px #47d6ad; }
 
         .sidebar-footer {
-          margin-top: auto;
+          margin-top: 40px;
           padding-top: 20px;
           border-top: 1px solid rgba(255, 255, 255, 0.05);
+          flex-shrink: 0;
         }
 
         .logout-link {
@@ -264,9 +226,8 @@ export default function Sidebar() {
           border: 1px solid rgba(239, 68, 68, 0.1) !important;
         }
 
-        .logout-link:hover {
-          background: #ef4444 !important;
-          color: #fff !important;
+        @media (max-width: 480px) {
+          .sidebar-toggle { top: 15px; right: 15px; width: 45px; height: 45px; }
         }
       `}</style>
     </>
