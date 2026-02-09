@@ -85,7 +85,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-page">
-      {/* طبقات الخلفية الديناميكية - نفس صفحة من نحن */}
       <div className="animated-bg">
         <div className="particle p1"></div>
         <div className="particle p2"></div>
@@ -107,7 +106,7 @@ export default function Dashboard() {
         <header className="header-section">
           <span className="subtitle">لوحة التحكم</span>
           <h1 className="title">
-             أهلاً، {user.full_name_ar ? user.full_name_ar.split(" ")[0] : "عضو مفكر"}
+              أهلاً، {user.full_name_ar ? user.full_name_ar.split(" ")[0] : "عضو مفكر"}
           </h1>
           <div className="title-underline"></div>
         </header>
@@ -117,7 +116,9 @@ export default function Dashboard() {
         <div className="cards-container">
           {/* بطاقة المعلومات الأساسية */}
           <div className="card glass-card">
-            <div className="card-icon">👤</div>
+            <div className="card-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#47D6AD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
             <h3>المعلومات الأساسية</h3>
             <div className="info-group">
               <div className="data-box">
@@ -133,17 +134,27 @@ export default function Dashboard() {
 
           {/* بطاقة التواصل */}
           <div className="card glass-card">
-            <div className="card-icon">📞</div>
+            <div className="card-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#47D6AD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
             <h3>قنوات التواصل</h3>
             <div className="info-group">
-               <div className="contact-row"><span>📱</span> {user.phone || "—"}</div>
-               <div className="contact-row"><span>✉️</span> {user.email}</div>
+                <div className="contact-row">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '8px'}}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                  {user.phone || "—"}
+                </div>
+                <div className="contact-row">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '8px'}}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                  {user.email}
+                </div>
             </div>
           </div>
 
           {/* بطاقة المسار الأكاديمي */}
           <div className="card glass-card">
-            <div className="card-icon">🎓</div>
+            <div className="card-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#47D6AD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c3.33 3 6.67 3 10 0v-5"></path></svg>
+            </div>
             <h3>المسار الأكاديمي</h3>
             <p className="univ-name">{user.university}</p>
             <div className={`role-tag ${user.role}`}>
@@ -155,7 +166,9 @@ export default function Dashboard() {
           <div className="card glass-card wide-card">
             <div className="card-header-flex">
               <div className="title-with-icon">
-                <span className="card-icon-small">💎</span>
+                <span className="card-icon-small">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#47D6AD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{verticalAlign: 'middle', marginLeft: '10px'}}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </span>
                 <h3>المهارات والخبرات</h3>
               </div>
               {!isEditingSkills && (
@@ -202,7 +215,6 @@ export default function Dashboard() {
           font-family: 'Cairo', sans-serif;
         }
 
-        /* --- الخلفية المتحركة (نفس صفحة من نحن) --- */
         .animated-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: radial-gradient(circle at center, #0b2a41 0%, #031c26 100%); }
         .particle { position: absolute; background: rgba(71, 214, 173, 0.4); border-radius: 50%; filter: blur(5px); animation: moveParticles 20s infinite linear; }
         .p1 { width: 150px; height: 150px; top: 10%; left: 20%; animation-duration: 25s; }
@@ -214,12 +226,11 @@ export default function Dashboard() {
         .bg-glow-2 { background: #004e64; bottom: -200px; left: -200px; animation: pulseGlow 12s infinite alternate-reverse; }
         @keyframes pulseGlow { 0% { opacity: 0.1; transform: scale(1); } 100% { opacity: 0.3; transform: scale(1.2); } }
 
-        /* --- محتوى الصفحة --- */
         .content {
           position: relative;
           z-index: 1;
           max-width: 1100px;
-          margin: 0 auto 0 280px; /* مساحة للسايدبار */
+          margin: 0 auto 0 280px;
           padding: 80px 40px;
         }
 
@@ -229,7 +240,6 @@ export default function Dashboard() {
         .title-underline { width: 80px; height: 6px; background: #47d6ad; border-radius: 10px; margin-top: 15px; }
         .desc { font-size: 20px; color: rgba(234, 255, 249, 0.7); margin-bottom: 60px; }
 
-        /* --- البطاقات --- */
         .cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
         .glass-card {
           background: rgba(255, 255, 255, 0.03);
@@ -242,13 +252,13 @@ export default function Dashboard() {
         .glass-card:hover { transform: translateY(-10px); border-color: rgba(71, 214, 173, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
         .wide-card { grid-column: 1 / -1; }
         
-        .card-icon { font-size: 40px; margin-bottom: 20px; display: block; }
+        .card-icon { margin-bottom: 20px; display: block; }
         .glass-card h3 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 20px; }
 
         .info-group label { display: block; font-size: 12px; color: #47d6ad; margin-bottom: 5px; font-weight: 700; }
         .highlight-text { font-size: 18px; font-weight: 600; color: #eafff9; margin-bottom: 15px; }
         
-        .contact-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: rgba(234, 255, 249, 0.8); }
+        .contact-row { display: flex; align-items: center; margin-bottom: 10px; color: rgba(234, 255, 249, 0.8); }
         .univ-name { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
         
         .role-tag {
@@ -262,7 +272,6 @@ export default function Dashboard() {
           border: 1px solid rgba(71, 214, 173, 0.2);
         }
 
-        /* --- قسم المهارات والتعديل --- */
         .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-edit { background: transparent; border: 1px solid #47d6ad; color: #47d6ad; padding: 6px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: 600; }
         .btn-edit:hover { background: #47d6ad; color: #031c26; }
@@ -300,7 +309,6 @@ export default function Dashboard() {
         .toast-notification.success { background: rgba(71, 214, 173, 0.9); color: #031c26; }
         @keyframes slideIn { from { top: -50px; opacity: 0; } to { top: 30px; opacity: 1; } }
 
-        /* --- التجاوب مع الجوال --- */
         @media (max-width: 1200px) {
           .content { margin-left: 0; padding-top: 120px; }
         }
