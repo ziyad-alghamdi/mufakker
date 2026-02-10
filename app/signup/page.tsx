@@ -91,7 +91,7 @@ export default function SignupPage() {
   setMessage("✔️ تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني لتأكيد الحساب.");
 
   // إرسال إيميل الترحيب
-  fetch("/api/welcome", {
+  fetch("/API/welcome", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_WELCOME_API_KEY);
+const resend = new Resend("re_cqWymrzs_LxUhNZEyunvbsvPSNYNaaqSV");
 
 export async function POST(req: Request) {
   try {
     const { email, fullName } = await req.json();
+console.log("🚀 Welcome email API called", email);
 
     if (!email || !fullName) {
       return NextResponse.json(
@@ -15,8 +16,8 @@ export async function POST(req: Request) {
     }
 
     await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL!,
-      to: email,
+       from: "مفكر <community@mufakker.com>",
+  to: "ziad.alghamdi.17@gmail.com",
       subject: "مرحباً بك في مفكر 🌱",
       html: `
         <div style="
