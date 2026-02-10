@@ -22,7 +22,18 @@ export default function EventsPage() {
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [userRegistrations, setUserRegistrations] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showIdeaStep, setShowIdeaStep] = useState(false);
+  const [hasIdea, setHasIdea] = useState<"yes" | "no" | null>(null);
+  const [ideaText, setIdeaText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [regStep, setRegStep] = useState('confirm'); // 'confirm' or 'idea'
+  const [isSubmittingIdea, setIsSubmittingIdea] = useState(false);
+  const [useProfileSkills, setUseProfileSkills] = useState<"yes" | "no" | null>(null);
+  const [skillsText, setSkillsText] = useState("");
+  const [profileSkills, setProfileSkills] = useState("");
 
+
+  
   // ✅ مودال التفاصيل
   const [selected, setSelected] = useState<Event | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -81,18 +92,30 @@ export default function EventsPage() {
   }, [loading, events]);
 
   async function loadUser() {
-    const { data } = await supabase.auth.getUser();
-    setUser(data.user);
+  const { data } = await supabase.auth.getUser();
+  setUser(data.user);
 
-    if (data.user) {
-      const { data: regs } = await supabase
-        .from("event_registrations")
-        .select("event_id")
-        .eq("user_id", data.user.id);
+  if (!data.user) return;
 
-      setUserRegistrations(regs?.map((r: any) => r.event_id) || []);
-    }
+  // ✅ جلب مهارات المستخدم من جدول users
+  const { data: userRow, error } = await supabase
+    .from("users")
+    .select("skills")
+    .eq("id", data.user.id)
+    .single();
+
+  if (!error && userRow?.skills) {
+    setProfileSkills(userRow.skills);
   }
+
+  const { data: regs } = await supabase
+    .from("event_registrations")
+    .select("event_id")
+    .eq("user_id", data.user.id);
+
+  setUserRegistrations(regs?.map((r: any) => r.event_id) || []);
+}
+
 
   async function loadEvents() {
     const { data } = await supabase.from("events").select("*");
@@ -133,6 +156,37 @@ export default function EventsPage() {
     setToast("تم إرسال طلب التسجيل بنجاح!");
     setTimeout(() => setToast(""), 2400);
   }
+async function submitRegistration(eventId: number) {
+  if (!user || submitting) return;
+
+  setSubmitting(true);
+
+  const { error } = await supabase.from("event_registrations").insert([
+    {
+      user_id: user.id,
+      event_id: eventId,
+      status: "pending",
+      idea: hasIdea === "yes" ? ideaText : null,
+      skills: skillsText,
+    },
+  ]);
+
+  setSubmitting(false);
+
+  if (error) {
+    alert("حدث خطأ أثناء التسجيل");
+    return;
+  }
+
+  setUserRegistrations((prev) => [...prev, eventId]);
+  await loadRegistrations();
+
+  setToast("تم تسجيلك بنجاح 🎉");
+  setTimeout(() => setToast(""), 2500);
+
+  closeModal();
+}
+
 
   function isExpired(dateString: string) {
     const today = new Date();
@@ -498,12 +552,90 @@ export default function EventsPage() {
                   </div>
                   <div className="info-row">
                     <span className="info-ico">👥</span>
-                    <span className="info-label">المسجلين</span>
+                    <span className="info-label">مسجلين مفكًِــر</span>
                     <span className="info-val">
                       {registrationsCountByEvent.get(selected.id) || 0}
                     </span>
                   </div>
                 </div>
+                  {showIdeaStep && (
+                  <div className="idea-step">
+                    <h4 className="idea-title">هل لديك فكرة أو مقترح؟</h4>
+
+                    <div className="idea-options">
+                      <button
+                        className={`idea-btn ${hasIdea === "yes" ? "active" : ""}`}
+                        onClick={() => setHasIdea("yes")}
+                      >
+                        نعم
+                      </button>
+                      <button
+                        className={`idea-btn ${hasIdea === "no" ? "active" : ""}`}
+                        onClick={() => setHasIdea("no")}
+                      >
+                        لا
+                      </button>
+                    </div>
+
+                    {hasIdea === "yes" && (
+                      <textarea
+                        className="idea-textarea"
+                        placeholder="اكتب فكرتك هنا..."
+                        value={ideaText}
+                        onChange={(e) => setIdeaText(e.target.value)}
+                      />
+                    )}
+
+                    {/* ===== المهارات ===== */}
+                    <h4 className="idea-title" style={{ marginTop: "20px" }}>
+                      هل تريد استخدام المهارات الموجودة في ملفك الشخصي؟
+                    </h4>
+
+                    <div className="idea-options">
+                      <button
+                        className={`idea-btn ${useProfileSkills === "yes" ? "active" : ""}`}
+                        onClick={() => {
+                          setUseProfileSkills("yes");
+                          setSkillsText(profileSkills || "");
+
+                        }}
+                      >
+                        نعم
+                      </button>
+                      <button
+                        className={`idea-btn ${useProfileSkills === "no" ? "active" : ""}`}
+                        onClick={() => {
+                          setUseProfileSkills("no");
+                          setSkillsText("");
+                        }}
+                      >
+                        لا
+                      </button>
+                    </div>
+
+                    {useProfileSkills && (
+                      <textarea
+                        className="idea-textarea"
+                        placeholder="اكتب مهاراتك..."
+                        value={skillsText}
+                        onChange={(e) => setSkillsText(e.target.value)}
+                      />
+                    )}
+
+                    <button
+                      className="btn-primary"
+                      disabled={
+                        submitting ||
+                        (hasIdea === "yes" && !ideaText.trim()) ||
+                        !skillsText.trim()
+                      }
+                      onClick={() => submitRegistration(selected!.id)}
+                    >
+                      {submitting ? "جاري الإرسال..." : "تأكيد التسجيل"}
+                    </button>
+                  </div>
+
+                  )}
 
                 <div className="modal-actions">
                   {isExpired(selected.date) ? (
@@ -515,9 +647,20 @@ export default function EventsPage() {
                       أنت مسجل بالفعل في هذه الفعالية
                     </div>
                   ) : (
-                    <button className="btn-primary" onClick={() => register(selected.id)}>
+                    <button
+                      className="btn-primary"
+                      onClick={() => {
+                        setShowIdeaStep(true);
+                        setHasIdea(null);
+                        setIdeaText("");
+                        setUseProfileSkills(null);
+                        setSkillsText("");
+                      }}
+                    >
                       سجل الآن
                     </button>
+
+
                   )}
 
                   <button className="btn-ghost" onClick={closeModal}>
@@ -1386,6 +1529,50 @@ export default function EventsPage() {
             transition: none !important;
           }
         }
+          .idea-step {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+}
+
+.idea-title {
+  margin-bottom: 10px;
+  font-weight: 900;
+}
+
+.idea-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.idea-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent;
+  color: #fff;
+  font-weight: 800;
+}
+
+.idea-btn.active {
+  background: #47d6ad;
+  color: #031c26;
+}
+
+.idea-textarea {
+  width: 100%;
+  min-height: 90px;
+  border-radius: 14px;
+  padding: 10px;
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  margin-bottom: 10px;
+}
+
       `}</style>
     </div>
   );

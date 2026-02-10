@@ -151,6 +151,20 @@ export default function AdminEventRegistrations() {
                     </div>
                   </div>
                 </div>
+                {/* الفكرة والمهارات */}
+                <div className="divider"></div>
+
+                <div className="extra-details">
+                  <div className="extra-item">
+                    <label>💡 الفكرة / المقترح</label>
+                    <p>{r.idea?.trim() ? r.idea : "لم يتم إدخال فكرة"}</p>
+                  </div>
+
+                  <div className="extra-item">
+                    <label>🛠️ المهارات المقدمة</label>
+                    <p>{r.skills?.trim() ? r.skills : "لم يتم إدخال مهارات"}</p>
+                  </div>
+                </div>
 
                 <div className="reg-footer">
                   <span className="request-time">
@@ -165,6 +179,7 @@ export default function AdminEventRegistrations() {
                   )}
                 </div>
               </div>
+              
             ))
           )}
         </div>
@@ -224,6 +239,34 @@ export default function AdminEventRegistrations() {
         .btn-reject:hover { background: rgba(255, 94, 94, 0.1); border-color: #ff5e5e; }
 
         .empty-msg { text-align: center; padding: 50px; color: rgba(255,255,255,0.4); font-size: 18px; }
+.extra-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.extra-item {
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 18px 20px;
+}
+
+.extra-item label {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: #47d6ad;
+  margin-bottom: 8px;
+}
+
+.extra-item p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.9;
+  color: rgba(234,255,249,0.9);
+  white-space: pre-wrap;
+}
 
         @media (max-width: 1024px) {
           .content { margin-right: 0; padding-top: 100px; }
