@@ -14,7 +14,7 @@ export default function Footer() {
                         <Image src="/q1.png" alt="Logo" width={120} height={120} priority />
                     </div>
                     <p className="footer-desc">
-                        منصة مذكر: وجهتك الأولى للورش والدورات التدريبية والابتكار التقني.
+                        منصة مفكِّـر: وجهتك الأولى للورش والدورات التدريبية والابتكار التقني.
                     </p>
                 </div>
 
