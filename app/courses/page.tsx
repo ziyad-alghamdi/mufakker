@@ -170,17 +170,17 @@ export default function CoursesPage() {
         <section className="hero-block" data-reveal>
           <div className="hero-inner">
             <span className="kicker">برامجنا التدريبية</span>
-            <h1 className="hero-title">الورش القادمة</h1>
-            <p className="hero-sub">استكشف كل الورش والبرامج المقدمة لك وطوّر مهاراتك</p>
+            <h1 className="hero-title">البرامج القادمة</h1>
+            <p className="hero-sub">استكشف كل الورش والبرامج والمعسكرات المقدمة لك وطوّر مهاراتك</p>
 
             <div className="stats-row">
               <div className="stat-item">
                 <span className="s-val">{stats.total}</span>
-                <span className="s-label">الورش المتاحة</span>
+                <span className="s-label">البرامج المتاحة</span>
               </div>
               <div className="stat-item">
                 <span className="s-val">{stats.userRegistered}</span>
-                <span className="s-label">ورش سجلت فيها</span>
+                <span className="s-label">برامج سجلت فيها</span>
               </div>
               <div className="stat-item highlight">
                 <span className="s-val"> 0</span>
@@ -449,11 +449,15 @@ export default function CoursesPage() {
 
 .modal-content {
   width: 5000px; /* عرض مناسب */
-  max-width: 90%;
+  max-width: 80%;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 20px; /* إضافة تقليص الزوايا */
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
   padding: 30px;
+   max-height: 80vh; /* تعيين أقصى ارتفاع (80% من ارتفاع الشاشة) */
+ overflow-y: scroll; /* تمكين التمرير عموديًا */
+  scrollbar-width: thin; /* عرض شريط التمرير في المتصفحات الحديثة */
+  scrollbar-color: transparent transparent; /* جعل شريط التمرير شفاف */
 }
 
 .modal-grid {
