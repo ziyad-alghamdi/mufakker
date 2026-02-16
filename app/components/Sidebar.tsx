@@ -35,8 +35,9 @@ export default function Sidebar() {
 
   const links = [
     { name: "حسابي الشخصي", href: "/dashboard" },
+    //{ name: "شهـاداتي", href: "/certificates" },
     { name: "من نحن", href: "/about" },
-    { name: "الورش والدورات", href: "/workshops" },
+    { name: "الورش والدورات", href: "/courses" },
     { name: "المشاركة والهاكاثونات", href: "/events" },
   ];
 

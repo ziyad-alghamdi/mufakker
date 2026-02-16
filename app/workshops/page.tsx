@@ -6,6 +6,7 @@ import BackButton from "../components/BackButton";
 import { supabase } from "../lib/supabaseClient";
 import Footer from "../components/FooterBar";
 
+
 type Workshop = {
   id: number;
   title: string;

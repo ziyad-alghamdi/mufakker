@@ -70,7 +70,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="dashboard-grid">
-          <a href="/admin/workshops" className="dashboard-btn">
+          <a href="/admin/courses" className="dashboard-btn">
             <div className="btn-icon">📚</div>
             <div className="btn-text">إدارة الورش والدورات</div>
           </a>
