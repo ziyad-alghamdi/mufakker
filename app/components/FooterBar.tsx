@@ -33,7 +33,7 @@ export default function Footer() {
                         </div>
 
                         <div className="icon-wrapper">
-                            <Link href="/workshops" className="icon-link-card" title="الورش والدورات">
+                            <Link href="/courses" className="icon-link-card" title="الورش والدورات">
                                 <div className="icon-box">
                                     <FaGraduationCap size={22} />
                                 </div>
