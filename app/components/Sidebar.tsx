@@ -6,233 +6,244 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import Image from "next/image";
 
-export default function Sidebar() {
+export default function TopNavbar() {
   const path = usePathname();
-  const [role, setRole] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    async function fetchUserRole() {
-      const { data: auth } = await supabase.auth.getUser();
-      if (!auth.user) return;
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
 
-      const { data } = await supabase
-        .from("users")
-        .select("role")
-        .eq("id", auth.user.id)
-        .single();
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
 
-      if (data) setRole(data.role);
-    }
+      if (user) {
+        const { data } = await supabase
+          .from("users")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        if (data) setRole(data.role);
+      }
+    };
 
-    fetchUserRole();
+    checkUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      if (!session) setRole(null);
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
-  const toggleSidebar = () => {
-    setOpen(!open);
-  };
-
-  // --- هنا أضفنا وظيفة تسجيل الخروج الجديدة ---
   const handleLogout = async () => {
-    await supabase.auth.signOut(); // ينهي الجلسة في سوبابيز
-    setOpen(false); // يغلق السايد بار
+    await supabase.auth.signOut();
+    window.location.href = "/";
   };
 
   const links = [
-    { name: "حسابي الشخصي", href: "/dashboard" },
+    { name: "الرئيسية", href: "/" },
     { name: "من نحن", href: "/about" },
     { name: "الورش والدورات", href: "/courses" },
     { name: "المشاركة والهاكاثونات", href: "/events" },
   ];
 
   return (
-    <>
-      <button className={`sidebar-toggle ${open ? "is-open" : ""}`} onClick={toggleSidebar}>
-        <span className="burger-icon">{open ? "✕" : "☰"}</span>
-      </button>
-
-      {open && <div className="overlay" onClick={() => setOpen(false)} />}
-
-      <aside className={`sidebar ${open ? "open" : ""}`}>
-        <div className="sidebar-scrollable-content">
-          <div className="logo-box">
-            <div className="logo-glow"></div>
-            <Image
-              src="/q1.png"
-              alt="Mufakker Logo"
-              width={160}
-              height={160}
-              priority
-              className="main-logo"
-            />
-          </div>
-
-          <nav className="nav-container">
-            <ul>
-              {links.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className={path === link.href ? "active" : ""}
-                    onClick={() => setOpen(false)}
-                  >
-                    <span className="link-text">{link.name}</span>
-                    {path === link.href && <span className="active-dot"></span>}
-                  </Link>
-                </li>
-              ))}
-
-              {role === "admin" && (
-                <li>
-                  <Link
-                    href="/admin"
-                    className={`admin-link ${path === "/admin" ? "active" : ""}`}
-                    onClick={() => setOpen(false)}
-                  >
-                    لوحة تحكم المسؤولين
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </nav>
-
-          <div className="sidebar-footer">
-            {/* تم تحديث الرابط هنا ليستخدم handleLogout */}
-            <Link href="/" className="logout-link" onClick={handleLogout}>
-              <span>تسجيل الخروج</span>
-            </Link>
-          </div>
+    <header className={`top-nav ${isScrolled ? "scrolled" : ""}`}>
+      <div className="nav-wrapper">
+        <div className="logo-section">
+          <Image src="/q1.png" alt="Logo" width={120} height={120} priority className="nav-logo" />
         </div>
-      </aside>
+
+        <nav className="nav-links-container">
+          <ul className="nav-list">
+            {links.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={`nav-item ${path === link.href ? "active" : ""}`}
+                >
+                  {link.name}
+                  {path === link.href && <span className="nav-dot"></span>}
+                </Link>
+              </li>
+            ))}
+
+            {role === "admin" && (
+              <li>
+                <Link href="/admin" className={`nav-item admin-link ${path === "/admin" ? "active" : ""}`}>
+                  الإدارة
+                </Link>
+              </li>
+            )}
+          </ul>
+        </nav>
+
+        <div className="auth-section">
+          {user ? (
+            <div className="user-actions">
+              <Link href="/dashboard" className="nav-item profile-link">الملف الشخصي</Link>
+              <button onClick={handleLogout} className="logout-btn">خروج</button>
+            </div>
+          ) : (
+            <div className="guest-actions">
+              <Link href="/login" className="login-link">تسجيل دخول</Link>
+              <Link href="/signup" className="signup-btn">حساب جديد</Link>
+            </div>
+          )}
+        </div>
+      </div>
 
       <style jsx global>{`
-        /* ... تبقى كل التنسيقات (CSS) كما هي بدون تغيير ... */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
-        .sidebar-toggle {
-          position: fixed;
-          top: calc(25px + env(safe-area-inset-top, 0px));
-          right: calc(25px + env(safe-area-inset-right, 0px));
-          z-index: 9999; 
-          background: rgba(37, 161, 142, 0.9);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          color: #fff;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 12px;
-          width: 50px;
-          height: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 24px;
-          cursor: pointer;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-          transition: all 0.3s ease;
-          -webkit-tap-highlight-color: transparent;
+        /* التعديل المهم هنا: دفع محتوى الصفحة للأسفل لتبدأ بعد الناف بار */
+        body {
+          margin-top: 100px; 
         }
 
-        .sidebar-toggle.is-open {
-          background: #ef4444;
-          transform: rotate(90deg);
-        }
-
-        .overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(3, 28, 38, 0.7);
-          backdrop-filter: blur(6px);
-          z-index: 1100;
-        }
-
-        .sidebar {
-          width: 300px;
-          height: 100vh;
-          background: linear-gradient(180deg, #0b2a41 0%, #031c26 100%);
+        .top-nav {
           position: fixed;
           top: 0;
+          left: 0;
           right: 0;
-          transform: translateX(100%);
-          transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          z-index: 1150;
+          height: 100px;
+          z-index: 2000;
           display: flex;
-          flex-direction: column;
-          font-family: "Cairo", sans-serif;
-          border-left: 2px solid rgba(71, 214, 173, 0.5); 
-          box-shadow: -5px 0 15px rgba(71, 214, 173, 0.1);
-        }
-
-        .sidebar.open {
-          transform: translateX(0);
-        }
-
-        .sidebar-scrollable-content {
-          height: 100%;
-          overflow-y: auto;
-          overflow-x: hidden;
-          padding: 40px 20px;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .sidebar-scrollable-content::-webkit-scrollbar { width: 5px; }
-        .sidebar-scrollable-content::-webkit-scrollbar-thumb { background: rgba(71, 214, 173, 0.2); border-radius: 10px; }
-
-        .logo-box {
-          position: relative;
-          display: flex;
-          justify-content: center;
           align-items: center;
-          margin-bottom: 50px;
-          padding: 20px 0;
-          flex-shrink: 0;
+          padding: 0 40px;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          direction: rtl;
         }
 
-        .logo-glow {
-          position: absolute;
-          width: 140px;
-          height: 140px;
-          background: radial-gradient(circle, rgba(71, 214, 173, 0.15) 0%, transparent 70%);
+        .top-nav.scrolled {
+          height: 85px;
         }
 
-        .nav-container { flex: 1; }
-        .sidebar ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-
-        .sidebar a {
+        .nav-wrapper {
+          width: 100%;
+          max-width: 1400px;
+          margin: 0 auto;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 16px 20px;
-          font-size: 17px;
-          font-weight: 600;
+          background: rgba(3, 28, 38, 0.85);
+          backdrop-filter: blur(15px);
+          padding: 10px 25px;
+          border-radius: 100px;
+          border: 1px solid rgba(71, 214, 173, 0.2);
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-list {
+          display: flex;
+          list-style: none;
+          gap: 10px;
+          margin: 0;
+          padding: 0;
+          align-items: center;
+        }
+
+        .nav-item {
           text-decoration: none;
-          border-radius: 14px;
-          color: rgba(234, 255, 249, 0.6);
-          transition: 0.3s all ease;
+          color: rgba(234, 255, 249, 0.7);
+          font-family: "Cairo", sans-serif;
+          font-weight: 600;
+          font-size: 15px;
+          padding: 10px 20px;
+          border-radius: 50px;
+          transition: 0.3s ease;
+          position: relative;
         }
 
-        .sidebar a:hover { background: rgba(255, 255, 255, 0.03); color: #47d6ad; }
-        .sidebar a.active { background: linear-gradient(90deg, rgba(37, 161, 142, 0.2) 0%, transparent 100%); color: #47d6ad; border-right: 4px solid #47d6ad; }
-        .active-dot { width: 6px; height: 6px; background: #47d6ad; border-radius: 50%; box-shadow: 0 0 10px #47d6ad; }
-
-        .sidebar-footer {
-          margin-top: 40px;
-          padding-top: 20px;
-          border-top: 1px solid rgba(255, 255, 255, 0.05);
-          flex-shrink: 0;
+        .nav-item:hover {
+          color: #47d6ad;
+          background: rgba(71, 214, 173, 0.1);
         }
 
-        .logout-link {
-          background: rgba(239, 68, 68, 0.05) !important;
-          color: #ef4444 !important;
-          justify-content: center !important;
-          border: 1px solid rgba(239, 68, 68, 0.1) !important;
+        .nav-item.active {
+          color: #47d6ad !important;
+          background: rgba(71, 214, 173, 0.15);
         }
 
-        @media (max-width: 480px) {
-          .sidebar-toggle { top: 15px; right: 15px; width: 45px; height: 45px; }
+        .nav-dot {
+          position: absolute;
+          bottom: 5px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 4px;
+          height: 4px;
+          background: #47d6ad;
+          border-radius: 50%;
+          box-shadow: 0 0 10px #47d6ad;
+        }
+
+        .auth-section {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .login-link {
+          text-decoration: none;
+          color: #47d6ad;
+          font-family: "Cairo", sans-serif;
+          font-weight: 700;
+          font-size: 14px;
+          padding: 10px 20px;
+          transition: 0.3s;
+        }
+
+        .signup-btn {
+          background: #47d6ad;
+          color: #031c26;
+          text-decoration: none;
+          padding: 10px 25px;
+          border-radius: 50px;
+          font-family: "Cairo", sans-serif;
+          font-weight: 800;
+          font-size: 14px;
+          box-shadow: 0 4px 15px rgba(71, 214, 173, 0.3);
+          transition: 0.3s ease;
+        }
+
+        .signup-btn:hover {
+          background: #3bc29c;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(71, 214, 173, 0.5);
+        }
+
+        .logout-btn {
+          background: rgba(239, 68, 68, 0.1);
+          color: #ef4444;
+          border: 1px solid rgba(239, 68, 68, 0.2);
+          cursor: pointer;
+          padding: 8px 18px;
+          border-radius: 50px;
+          font-family: "Cairo", sans-serif;
+          font-weight: 700;
+          transition: 0.3s;
+        }
+
+        .nav-logo {
+          height: 40px;
+          width: auto;
+        }
+
+        @media (max-width: 992px) {
+          .nav-links-container { display: none; }
+          body { margin-top: 80px; } /* تصغير المسافة في الجوال */
         }
       `}</style>
-    </>
+    </header>
   );
 }

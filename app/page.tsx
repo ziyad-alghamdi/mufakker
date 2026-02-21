@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import TopNavbar from "./components/Sidebar"; 
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -21,7 +22,7 @@ export default function LandingPage() {
       <div className="bg-gradient-sphere sphere-2"></div>
       <div className="bg-gradient-sphere sphere-3"></div>
       <div className="grid-overlay"></div>
-
+<TopNavbar/>
       {/* Navbar */}
       <nav className={`navbar ${scrolled ? "nav-scrolled" : ""}`}>
         <div className="nav-content">

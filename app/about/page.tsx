@@ -90,7 +90,7 @@ export default function AboutPage() {
       <BackButton />
 
       <div className="content">
-        <header className="header-section">
+        <header className="header-section"><span className="subtitle">.</span>
           <span className="subtitle">تعرف على عالمنا</span>
           <h1 className="title">من نحن</h1>
           <div className="title-underline"></div>
