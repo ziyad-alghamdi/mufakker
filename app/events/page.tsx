@@ -651,6 +651,10 @@ async function submitRegistration(eventId: number) {
                       className="btn-primary"
                       onClick={() => {
                         setShowIdeaStep(true);
+                        setTimeout(() => {
+                          const el = document.querySelector(".idea-step");
+                          el?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }, 100);
                         setHasIdea(null);
                         setIdeaText("");
                         setUseProfileSkills(null);
@@ -1362,12 +1366,31 @@ async function submitRegistration(eventId: number) {
         }
 
         .modal-body {
-          padding: 26px 26px 22px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          gap: 16px;
-        }
+  padding: 26px 26px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  max-height: 80vh;        /* يمنع التمدد خارج الشاشة */
+  overflow-y: auto;        /* يفعّل التمرير */
+  scroll-behavior: smooth; 
+}
+
+/* إخفاء السكروول في كروم + سفاري */
+.modal-body::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* إخفاء السكروول في فايرفوكس */
+.modal-body {
+  scrollbar-width: none;
+}
+
+/* إخفاء السكروول في Edge */
+.modal-body {
+  -ms-overflow-style: none;
+}
 
         .modal-kicker {
           color: rgba(71,214,173,0.92);
