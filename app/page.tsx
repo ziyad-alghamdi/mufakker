@@ -76,17 +76,17 @@ export default function LandingPage() {
 
           <div className="stats-row">
             <div className="stat-item">
-              <span className="stat-value">+10K</span>
+              <span className="stat-value">+100</span>
               <span className="stat-label">عضو نشط</span>
             </div>
             <div className="stat-divider"></div>
             <div className="stat-item">
-              <span className="stat-value">+50</span>
+              <span className="stat-value">+5</span>
               <span className="stat-label">مسار تدريبي</span>
             </div>
             <div className="stat-divider"></div>
             <div className="stat-item">
-              <span className="stat-value">4.9/5</span>
+              <span className="stat-value">4/5</span>
               <span className="stat-label">تقييم المتدربين</span>
             </div>
           </div>
