@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import TopNavbar from "./components/Sidebar"; 
+import Footer from "./components/FooterBar";
+
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -92,8 +94,10 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
+        
       </main>
-
+      <h1>.</h1>
+<Footer/>
       <style jsx global>{`
         /* ... الأكواد السابقة كما هي ... */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');

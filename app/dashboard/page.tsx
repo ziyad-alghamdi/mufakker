@@ -69,15 +69,51 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="loading-screen">
-        <div className="loader"></div>
+        <div className="loader-container">
+          <img src="/q1.png" alt="Mufakker Logo Loader" className="logo-loader" />
+          <div className="glow-effect"></div>
+        </div>
         <p className="loading-text">جاري تحضير ملفك الشخصي...</p>
         <style jsx>{`
-          .loading-screen { height: 100vh; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #031c26; font-family: 'Cairo', sans-serif; }
-          .loader { position: relative; width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(45deg, transparent, transparent 40%, #47D6AD); animation: animate 2s linear infinite; }
-          @keyframes animate { 0% { transform: rotate(0deg); filter: hue-rotate(0deg); } 100% { transform: rotate(360deg); filter: hue-rotate(360deg); } }
-          .loader:before { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; background: #031c26; border-radius: 50%; z-index: 1000; }
-          .loader:after { content: ''; position: absolute; inset: 0px; background: linear-gradient(45deg, transparent, transparent 40%, #47D6AD); border-radius: 50%; z-index: 1; filter: blur(30px); }
-          .loading-text { margin-top: 30px; color: #47D6AD; font-weight: 700; }
+          .loading-screen { 
+            height: 100vh; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #031c26; font-family: 'Cairo', sans-serif; 
+          }
+          .loader-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .logo-loader {
+            width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 10;
+            animation: pulseLogo 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          .glow-effect {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background: #47D6AD;
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 1;
+            opacity: 0.5;
+            animation: pulseGlow 2s infinite alternate;
+          }
+          @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.2); }
+          }
+          @keyframes pulseGlow {
+            0% { transform: scale(0.8); opacity: 0.3; }
+            100% { transform: scale(1.2); opacity: 0.6; }
+          }
+          .loading-text { margin-top: 40px; color: #47D6AD; font-weight: 700; font-size: 18px; letter-spacing: 0.5px; animation: textFade 1.5s infinite alternate; }
+          @keyframes textFade { 0% { opacity: 0.5; } 100% { opacity: 1; } }
         `}</style>
       </div>
     );
