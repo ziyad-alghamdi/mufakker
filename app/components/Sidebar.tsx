@@ -95,7 +95,7 @@ export default function Sidebar() {
           </nav>
 
           <div className="sidebar-footer">
-            <Link href="/login" className="logout-link" onClick={() => setOpen(false)}>
+            <Link href="http://localhost:3000" className="logout-link" onClick={() => setOpen(false)}>
               <span>تسجيل الخروج</span>
             </Link>
           </div>
