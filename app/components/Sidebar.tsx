@@ -104,11 +104,11 @@ export default function TopNavbar() {
                {user ? (
                 <div className="mobile-user-actions">
                   <Link href="/dashboard" className="nav-item">الملف الشخصي</Link>
-                  <button onClick={handleLogout} className="logout-btn">خروج</button>
+                  <button onClick={handleLogout} className="logout-btn">تسجيل خروج</button>
                 </div>
               ) : (
                 <div className="mobile-guest-actions">
-                  <Link href="/login" className="login-link">تسجيل دخول</Link>
+                  <Link href="/login" className="login-link">  تسجيل دخول </Link>
                   <Link href="/signup" className="signup-btn">حساب جديد</Link>
                 </div>
               )}
@@ -120,7 +120,7 @@ export default function TopNavbar() {
           {user ? (
             <div className="user-actions">
               <Link href="/dashboard" className="nav-item profile-link">الملف الشخصي</Link>
-              <button onClick={handleLogout} className="logout-btn">خروج</button>
+              <button onClick={handleLogout} className="logout-btn">تسجيل خروج</button>
             </div>
           ) : (
             <div className="guest-actions">
@@ -272,10 +272,98 @@ export default function TopNavbar() {
         }
 
         /* التنسيقات العامة المتبقية */
-        .login-link { color: #47d6ad; text-decoration: none; font-weight: 700; }
-        .signup-btn { background: #47d6ad; color: #031c26; padding: 10px 25px; border-radius: 50px; font-weight: 800; text-decoration: none; }
-        .logout-btn { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 18px; border-radius: 50px; cursor: pointer; }
-        .nav-logo { height: 40px; width: auto; }
+        /* تنسيق زر تسجيل الدخول المربع الشفاف */
+/* --- أزرار تسجيل الدخول والملف الشخصي (مربع شفاف) --- */
+.login-link, .profile-link {
+  color: #47d6ad !important;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 10px 22px;
+  border: 1px solid rgba(71, 214, 173, 0.4);
+  border-radius: 12px; /* زوايا مربعة عصرية */
+  background: rgba(71, 214, 173, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: "Cairo", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-link:hover, .profile-link:hover {
+  background: rgba(71, 214, 173, 0.15);
+  border-color: #47d6ad;
+  box-shadow: 0 0 15px rgba(71, 214, 173, 0.2);
+  transform: translateY(-2px);
+}
+
+/* --- زر تسجيل الخروج (مربع شفاف بلون أحمر خافت) --- */
+.logout-btn {
+  background: rgba(239, 68, 68, 0.05) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-family: "Cairo", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+  transform: translateY(-2px);
+}
+
+/* --- زر حساب جديد (الممتلئ) --- */
+.signup-btn {
+  background: #47d6ad !important;
+  color: #031c26 !important;
+  padding: 11px 25px;
+  border-radius: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid #47d6ad;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signup-btn:hover {
+  background: #3bc29b !important;
+  box-shadow: 0 5px 15px rgba(71, 214, 173, 0.3);
+  transform: translateY(-2px);
+}
+
+/* --- تعديلات الهيكلة لضمان الوضوح --- */
+.user-actions, .guest-actions, .mobile-user-actions, .mobile-guest-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .mobile-user-actions, .mobile-guest-actions {
+    flex-direction: column;
+    width: 100%;
+    padding: 15px 0;
+  }
+  
+  .mobile-user-actions .profile-link,
+  .mobile-user-actions .logout-btn,
+  .mobile-guest-actions .login-link,
+  .mobile-guest-actions .signup-btn {
+    width: 100%; /* تمدد الأزرار في الجوال لتسهيل الضغط */
+    text-align: center;
+  }
+}
+          .nav-logo { height: 40px; width: auto; }
       `}</style>
     </header>
   );

@@ -232,11 +232,15 @@ async function submitRegistration(eventId: number) {
   }
 
   // --- شاشة التحميل ---
-  if (loading)
+  
+if (loading)
     return (
       <div className="loading-screen">
-        <div className="loader"></div>
-        <p className="loading-text">جاري عرض الفعاليات المتاحة...</p>
+        <div className="loader-container">
+          <div className="spinner-border"></div>
+          <img src="/m10.png" alt="Mufakker Logo Loader" className="logo-loader" />
+        </div>
+        <p className="loading-text">جاري عرض الهاكاثونات و المشاركات ...</p>
 
         <style jsx>{`
           .loading-screen {
@@ -249,64 +253,58 @@ async function submitRegistration(eventId: number) {
             background: #031c26;
             font-family: "Cairo", sans-serif;
           }
-          .loader {
+          .loader-container {
             position: relative;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: linear-gradient(
-              45deg,
-              transparent,
-              transparent 40%,
-              #47d6ad
-            );
-            animation: animate 2s linear infinite;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
-          @keyframes animate {
-            0% {
-              transform: rotate(0deg);
-              filter: hue-rotate(0deg);
-            }
-            100% {
-              transform: rotate(360deg);
-              filter: hue-rotate(360deg);
-            }
-          }
-          .loader:before {
-            content: "";
+          .spinner-border {
             position: absolute;
-            top: 6px;
-            left: 6px;
-            right: 6px;
-            bottom: 6px;
-            background: #031c26;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: #47D6AD;
+            border-bottom-color: #47D6AD;
             border-radius: 50%;
-            z-index: 1000;
-          }
-          .loader:after {
-            content: "";
-            position: absolute;
-            inset: 0px;
-            background: linear-gradient(
-              45deg,
-              transparent,
-              transparent 40%,
-              #47d6ad
-            );
-            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
             z-index: 1;
-            filter: blur(30px);
+          }
+          .logo-loader {
+            width: 200%;
+            height: auto;
+            position: relative;
+            z-index: 10;
+            animation: pulseLogo 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+  top: 60px; /* ينزلها 30px */
+  left: 10px;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.05); filter: brightness(1.1); }
           }
           .loading-text {
-            margin-top: 30px;
-            color: #47d6ad;
+            margin-top: 40px;
+            color: #ebfff9;
             font-weight: 700;
-            letter-spacing: 1px;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            animation: textFade 1.5s infinite alternate;
+          }
+          @keyframes textFade {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
           }
         `}</style>
       </div>
     );
-
   return (
     <div className="events-magazine">
       <div className="bg" aria-hidden="true">

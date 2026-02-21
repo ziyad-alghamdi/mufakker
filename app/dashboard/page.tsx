@@ -66,58 +66,78 @@ export default function Dashboard() {
     setSaving(false);
   };
 
-  if (loading) {
+if (loading)
     return (
       <div className="loading-screen">
         <div className="loader-container">
-          <img src="/q1.png" alt="Mufakker Logo Loader" className="logo-loader" />
-          <div className="glow-effect"></div>
+          <div className="spinner-border"></div>
+          <img src="/m10.png" alt="Mufakker Logo Loader" className="logo-loader" />
         </div>
-        <p className="loading-text">جاري تحضير ملفك الشخصي...</p>
+        <p className="loading-text">جاري عرض الملف الشخصي ...</p>
+
         <style jsx>{`
-          .loading-screen { 
-            height: 100vh; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #031c26; font-family: 'Cairo', sans-serif; 
+          .loading-screen {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #031c26;
+            font-family: "Cairo", sans-serif;
           }
           .loader-container {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 300px;
+            height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
           }
-          .logo-loader {
+          .spinner-border {
+            position: absolute;
             width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: #47D6AD;
+            border-bottom-color: #47D6AD;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            z-index: 1;
+          }
+          .logo-loader {
+            width: 200%;
             height: auto;
             position: relative;
             z-index: 10;
             animation: pulseLogo 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+  top: 60px; /* ينزلها 30px */
+  left: 10px;
           }
-          .glow-effect {
-            position: absolute;
-            width: 80%;
-            height: 80%;
-            background: #47D6AD;
-            border-radius: 50%;
-            filter: blur(40px);
-            z-index: 1;
-            opacity: 0.5;
-            animation: pulseGlow 2s infinite alternate;
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
           }
           @keyframes pulseLogo {
             0%, 100% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.1); filter: brightness(1.2); }
+            50% { transform: scale(1.05); filter: brightness(1.1); }
           }
-          @keyframes pulseGlow {
-            0% { transform: scale(0.8); opacity: 0.3; }
-            100% { transform: scale(1.2); opacity: 0.6; }
+          .loading-text {
+            margin-top: 40px;
+            color: #ebfff9;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            animation: textFade 1.5s infinite alternate;
           }
-          .loading-text { margin-top: 40px; color: #47D6AD; font-weight: 700; font-size: 18px; letter-spacing: 0.5px; animation: textFade 1.5s infinite alternate; }
-          @keyframes textFade { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+          @keyframes textFade {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+          }
         `}</style>
       </div>
     );
-  }
 
   return (
     <div className="dashboard-page">

@@ -150,7 +150,78 @@ export default function CoursesPage() {
     return new Date(dateStr) < today;
   };
 
-  if (loading) return <div className="loading-state"><div className="loader"></div></div>;
+  // شاشة التحميل الجديدة
+  if (loading)
+    return (
+      <div className="loading-screen">
+        <div className="loader-container">
+          <div className="spinner-border"></div>
+          <img src="/m10.png" alt="Mufakker Logo Loader" className="logo-loader" />
+        </div>
+        <p className="loading-text">جاري عرض البرامج التدريبية ...</p>
+
+        <style jsx>{`
+          .loading-screen {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #031c26;
+            font-family: "Cairo", sans-serif;
+          }
+          .loader-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .spinner-border {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: #47D6AD;
+            border-bottom-color: #47D6AD;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            z-index: 1;
+          }
+          .logo-loader {
+            width: 200%;
+            height: auto;
+            position: relative;
+            z-index: 10;
+            animation: pulseLogo 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            top: 60px;
+            left: 10px;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.05); filter: brightness(1.1); }
+          }
+          .loading-text {
+            margin-top: 40px;
+            color: #ebfff9;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            animation: textFade 1.5s infinite alternate;
+          }
+          @keyframes textFade {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+          }
+        `}</style>
+      </div>
+    );
 
   return (
     <div className="workshops-magazine">
@@ -197,7 +268,9 @@ export default function CoursesPage() {
             <div className="featured-card" onClick={() => openModal(featuredCourse)}>
               <div className="f-media">
                 <img src={featuredCourse.image_url || "/placeholder.jpg"} alt="" />
-                <div className="f-badge">{isExpired(featuredCourse.date) ? "منتهية" : "قادمة"}</div>
+                <div className={`f-badge ${isExpired(featuredCourse.date) ? "expired-badge" : "coming-badge"}`}>
+  {isExpired(featuredCourse.date) ? "انتهت" : "قادمة"}
+</div>
               </div>
               <div className="f-content">
                 <h3>{featuredCourse.title}</h3>
@@ -269,7 +342,7 @@ export default function CoursesPage() {
           </div>
         </div>
       )}
-            <Footer />
+      <Footer />
       
 
       <style jsx>{`
@@ -285,17 +358,16 @@ export default function CoursesPage() {
         .glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(120px); opacity: 0.1; }
         .g1 { background: #47d6ad; top: -100px; right: -100px; }
         .g2 { background: #004e64; bottom: -100px; left: -100px; }
-        .grain { position: absolute; inset: 0; opacity: 0.03; background-image: url("data:image/svg+xml,..."); }
 
         .page-container {
-  position: relative;
-  z-index: 1;
-  max-width: 100%; /* تعديل من 1200px إلى 100% */
-  width: 100%; /* إضافة هذه الخاصية لتوسيع العرض بالكامل */
-  margin: 0 auto;
-  padding: 40px 20px;
-  box-sizing: border-box;
-}
+          position: relative;
+          z-index: 1;
+          max-width: 100%;
+          width: 100%;
+          margin: 0 auto;
+          padding: 40px 20px;
+          box-sizing: border-box;
+        }
 
 
         /* Reveal Animation */
@@ -317,30 +389,77 @@ export default function CoursesPage() {
 
         /* Featured */
         .section-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 25px; }
-        .featured-card { 
-          display: grid; grid-template-columns: 1fr 1.2fr; background: rgba(255,255,255,0.02);
-          border-radius: 30px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);
-          cursor: pointer; transition: 0.3s;
+        
+        .featured-section {
+          display: flex;
+          justify-content: center;
+          margin: 20px auto;
         }
-        .featured-card:hover { transform: translateY(-5px); border-color: #47d6ad; }
-        .f-media { height: 350px; position: relative; }
-        .f-media img { width: 100%; height: 100%; object-fit: cover; }
-        .f-badge { position: absolute; top: 20px; right: 20px; background: #47d6ad; color: #031c26; padding: 5px 15px; border-radius: 10px; font-weight: 800; }
-        .f-content { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
-        .f-meta { display: flex; gap: 20px; margin: 20px 0; color: #47d6ad; font-weight: 700; }
-        .f-btn { width: fit-content; background: none; border: 1px solid #47d6ad; color: #47d6ad; padding: 10px 25px; border-radius: 12px; cursor: pointer; }
+
+        .featured-card {
+          width: 550px;
+          background: rgba(255, 255, 255, 0.02);
+          border-radius: 15px;
+          overflow: hidden;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          cursor: pointer;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+          margin: 20px auto;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .f-media {
+          height: 250px;
+          width: 100%;
+          position: relative;
+        }
+
+        .f-media img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .f-content {
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .f-meta {
+          display: flex;
+          gap: 20px;
+          margin: 10px 0;
+          color: #47d6ad;
+          font-weight: 700;
+        }
+
+        .f-btn {
+          width: 100%;
+          background: #47d6ad;
+          color: #031c26;
+          padding: 12px;
+          border-radius: 15px;
+          font-weight: 700;
+          text-align: center;
+          cursor: pointer;
+          margin-top: 10px;
+        }
 
         /* Grid */
         .masonry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; margin-top: 30px; }
         .tile { 
           background: rgba(255,255,255,0.03); border-radius: 25px; overflow: hidden;
           border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s;
+          max-width: 400px; margin: 20px auto; width: 100%;
         }
         .tile:hover { transform: translateY(-10px); border-color: #47d6ad; }
         .tile-media { height: 200px; }
         .tile-media img { width: 100%; height: 100%; object-fit: cover; }
         .tile-body { padding: 20px; }
-        .tile-meta { display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: 15px; color: rgba(99, 30, 30, 0.5); }
 
         /* Modal */
         .modal-backdrop { 
@@ -349,421 +468,83 @@ export default function CoursesPage() {
           opacity: 0; pointer-events: none; transition: 0.3s; padding: 20px;
         }
         .modal-backdrop.active { opacity: 1; pointer-events: auto; }
-        .modal-content { 
-          background: #042533; width: 60%; max-width: 900px; border-radius: 35px;
-          border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;
+        
+        .modal-content {
+          width: 80%;
+          max-width: 900px;
+          background: #042533;
+          border-radius: 20px;
+          box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+          padding: 30px;
+          max-height: 80vh;
+          overflow-y: scroll;
+          scrollbar-width: none;
+          position: relative;
         }
-        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; }
-        .m-img-side img { width: 100%; height: 100%; object-fit: cover; }
-        .m-text-side { padding: 40px; }
-        .m-info-box { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; margin: 25px 0; }
+        .modal-content::-webkit-scrollbar { display: none; }
+
+        .modal-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
+        .m-img-side img { width: 100%; border-radius: 15px; }
+        .m-text-side { padding: 10px; }
+        .m-info-box { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; margin-top: 20px; }
         .m-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .reg-btn { 
-          width: 100%; background: #47d6ad; color: #031c26; border: none; 
-          padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; 
-        }
-        .reg-status { text-align: center; padding: 15px; border-radius: 15px; font-weight: 700; }
+
+        .reg-btn { width: 100%; background: #47d6ad; color: #031c26; border: none; padding: 15px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+        .reg-status { text-align: center; padding: 12px; border-radius: 15px; font-weight: 700; }
         .reg-status.success { background: rgba(71, 214, 173, 0.1); color: #47d6ad; }
-        .close-x { position: absolute; top: 20px; left: 20px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 10; }
+        .reg-status.expired { background: rgba(255, 0, 0, 0.1); color: red; }
 
-        /* Toast */
-        .toast-msg { 
-          position: fixed; bottom: 30px; left: 30px; background: #47d6ad; color: #031c26;
-          padding: 15px 30px; border-radius: 20px; font-weight: 900; z-index: 2000;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: slideUp 0.4s ease;
-        }
+        .close-x { position: absolute; top: 10px; left: 10px; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; z-index: 10; }
 
-        .loading-state { height: 100vh; display: flex; align-items: center; justify-content: center; background: #031c26; }
-        .loader { width: 50px; height: 50px; border: 3px solid #47d6ad; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* Global White Text */
+        * { color: white !important; }
+        .toast-msg, .f-btn, .reg-btn { color: #031c26 !important; }
 
         @media (max-width: 850px) {
           .featured-card, .modal-grid { grid-template-columns: 1fr; }
-          .hero-title { font-size: 2.2rem; }
-          .f-media { height: 200px; }
+          .hero-title { font-size: 28px; }
+          .featured-card { width: 100%; }
+          .stats-row { grid-template-columns: 1fr 1fr; }
         }
-          .featured-section {
-  display: flex;
-  justify-content: center; /* لتوسيط المستطيل في الصفحة */
-  margin: 20px auto;
-}
-
-.featured-card {
-  width: 550px; /* الحجم المناسب */
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 15px; /* تقليص الزوايا */
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15); /* تأثير الظل */
-  margin: 20px auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.f-media {
-  height: 50%; /* جعل الصورة تأخذ نصف الكرت */
-  width: 100%;
-  position: relative;
-}
-
-.f-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* إضافة فاصل بين الصورة والنص */
-}
-
-.f-content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.f-meta {
-  display: flex;
-  gap: 20px;
-  margin: 10px 0;
-  color: #47d6ad;
-  font-weight: 700;
-}
-
-.f-btn {
-  width: 100%;
-  background: #47d6ad;
-  color: #031c26;
-  padding: 12px;
-  border-radius: 15px;
-  font-weight: 700;
-  text-align: center;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.f-btn:hover {
-  background: #25a18e;
-}
-
-.modal-content {
-  width: 5000px; /* عرض مناسب */
-  max-width: 80%;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 20px; /* إضافة تقليص الزوايا */
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
-  padding: 30px;
-   max-height: 80vh; /* تعيين أقصى ارتفاع (80% من ارتفاع الشاشة) */
- overflow-y: scroll; /* تمكين التمرير عموديًا */
-  scrollbar-width: thin; /* عرض شريط التمرير في المتصفحات الحديثة */
-  scrollbar-color: transparent transparent; /* جعل شريط التمرير شفاف */
-}
-
-.modal-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.m-img-side img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 15px;
-}
-
-.m-text-side {
-  padding: 20px;
-}
-
-.m-info-box {
-  margin-top: 20px;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
-}
-
-.m-info-box .m-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.reg-status {
-  padding: 12px;
-  border-radius: 15px;
-  font-weight: 700;
-  text-align: center;
-}
-
-.reg-status.success {
-  background: rgba(71, 214, 173, 0.1);
-  color: #47d6ad;
-}
-
-.reg-status.expired {
-  background: rgba(255, 0, 0, 0.1);
-  color: red;
-}
-
-.close-x {
+          .f-badge {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 2rem;
-  cursor: pointer;
+  top: 20px;
+  right: 20px;
+  background: rgba(71, 214, 173, 0.1); /* خلفية شفافة جداً */
+  color: #47d6ad !important; /* لون النص الأساسي */
+  padding: 6px 18px;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  border: 1px solid rgba(71, 214, 173, 0.3);
+  
+  /* تأثير الإضاءة الخافتة */
+  text-shadow: 
+    0 0 5px rgba(71, 214, 173, 0.6),
+    0 0 15px rgba(71, 214, 173, 0.4);
+  
+  /* تأثير النبض الخفيف للإضاءة */
+  animation: softGlow 3s infinite alternate;
+  backdrop-filter: blur(5px);
+  z-index: 10;
 }
 
-/* تغيير اللون إلى الأبيض في كل النصوص */
-* {
-  color: white !important;
-}
-
-.workshops-magazine {
-  background: #031c26;
-  color: #fff; /* النصوص تكون باللون الأبيض */
-  font-family: 'Cairo', sans-serif;
-  min-height: 100vh;
-  direction: rtl;
-  position: relative;
-  overflow-x: hidden;
-}
-
-.header-text, .title, .subtitle, .hero-title, .hero-sub, .stat-item .s-val, .stat-item .s-label, .f-meta,  .tile-title, .tile-desc,   .reg-status, .modal-content, .modal-grid, .m-text-side, .m-info-box .m-row, .btn-confirm, .btn-cancel {
-  color: white !important; /* جعل كل النصوص بالأبيض */
-}
-
-.toast-msg {
-  background: #47d6ad;
-  color: #031c26;
-}
-
-.modal-content {
-  background: rgba(255, 255, 255, 0.02); /* يبقى الظلام في الخلفية */
-  color: white !important;
-}
-
-.f-meta {
-  display: flex;
-  gap: 20px;
-  margin: 10px 0;
-  color: #47d6ad; /* هذا يبقى أخضر */
-}
-
-.reg-status.success {
-  background: rgba(71, 214, 173, 0.1);
-  color: #47d6ad;
-}
-
-.reg-status.expired {
-  background: rgba(255, 0, 0, 0.1);
-  color: red;
-}
-
-.hero-inner {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: white !important;
-}
-
-.f-btn {
-  background: #47d6ad;
-  color: #031c26; /* هذه تبقى بنفس اللون */
-}
-
-.m-row span, .modal-content h2 {
-  color: white;
-}
-
-.m-info-box .m-row {
-  color: white;
-}
-
-/* أي مكان يتم فيه النصوص */
-input, textarea, select {
-  color: white; /* النصوص تكون باللون الأبيض داخل الحقول */
-}
-
-/* أساسي */
-.courses-magazine {
-  font-family: "Cairo", sans-serif;
-  background-color: #031c26;
-  color: white;
-}
-
-.hero-block {
-  padding: 20px;
-}
-
-.hero-title {
-  font-size: 36px;
-}
-
-.grid-section {
-  margin-top: 50px;
-}
-
-.tile {
-   background: rgba(255,255,255,0.03);
-  border-radius: 25px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.05);
-  cursor: pointer;
-  transition: transform 420ms ease, border-color 420ms ease, box-shadow 420ms ease;
-  position: relative;
-  transition-delay: var(--d, 0ms);
-  width: 100%; /* يمكنك تعديل هذا من أجل زيادة الحجم */
-  max-width: 400px; /* تعديل الحجم الأقصى هنا */
-  margin: 20px auto; /* زيادة المسافة بين الكروت */
-}
-
-.f-btn {
-  background-color: #08b886;
-  color: #031c26;
-  border-radius: 10px;
-  padding: 10px;
-}
-
-/* المودال */
-.modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-  background-color: #042533;
-  border-radius: 10px;
-}
-
-.m-row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.m-info-box {
-  padding: 10px;
-}
-
-.reg-btn {
-  background-color: #47d6ad;
-  color: #031c26;
-  padding: 12px;
-  border-radius: 10px;
-}
-/* خاصية media queries لضبط التنسيق مع الأجهزة الصغيرة */
-@media (max-width: 850px) {
-  /* تعديل النصوص والعناصر لتتناسب مع الهواتف */
-  .hero-title {
-    font-size: 28px; /* تقليل حجم العنوان */
+@keyframes softGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(71, 214, 173, 0.1);
+    border-color: rgba(71, 214, 173, 0.2);
   }
-
-  .tile {
-    max-width: 100%; /* جعل الكروت تتناسب مع كامل عرض الشاشة */
-    width: 100%; /* تعديل الكروت لتأخذ العرض الكامل */
-    margin: 10px auto; /* تقليل المسافة بين الكروت */
-  }
-
-  .f-media {
-    height: 200px; /* تقليل ارتفاع الصورة داخل الكرت */
-  }
-
-  .modal-content {
-    width: 90%; /* عرض المودال 90% من عرض الشاشة */
-    max-width: 500px; /* تحديد أقصى عرض للمودال */
-    padding: 20px; /* تقليل الحشو داخل المودال */
-  }
-
-  .page-container {
-    padding: 10px; /* تقليل الحشو داخل الصفحة */
-  }
-
-  .f-btn {
-    font-size: 14px; /* تقليل حجم الخط في الأزرار */
-    padding: 10px 18px; /* تقليل المسافة في الأزرار */
-  }
-
-  .grid-section {
-    margin-top: 30px; /* تقليل المسافة بين الأقسام */
-  }
-
-  .stats-row {
-    grid-template-columns: 1fr 1fr; /* تغيير تخطيط الإحصائيات ليتناسب مع الجوال */
-    gap: 10px; /* تقليل المسافة بين العناصر */
-  }
-
-  .stat-item {
-    padding: 15px;
-    font-size: 14px; /* تقليل حجم الخط في الإحصائيات */
-  }
-
-  .f-content {
-    padding: 15px; /* تقليل الحشو داخل محتوى الكرت */
-  }
-
-  .tile-meta {
-    font-size: 14px; /* تقليل حجم الخط في تفاصيل الكرت */
-  }
-
-  .m-info-box {
-    padding: 15px; /* تقليل الحشو داخل المودال */
-  }
-
-  .reg-btn {
-    padding: 10px; /* تقليل المسافة داخل الأزرار في المودال */
-  }
-
-  .m-img-side img {
-    height: 100%; /* جعل الصورة تأخذ كامل المساحة المتاحة */
-    object-fit: cover; /* لضمان ملائمة الصورة */
-  }
-
-  .m-text-side {
-    padding: 20px; /* تعديل الحشو في المودال */
-  }
-
-  /* إخفاء بعض العناصر أو تعديل عرضها إذا كانت الشاشة صغيرة */
-  .modal-grid {
-    grid-template-columns: 1fr; /* استخدام عمود واحد على الجوال */
+  100% {
+    box-shadow: 0 0 15px rgba(71, 214, 173, 0.3);
+    border-color: rgba(71, 214, 173, 0.6);
   }
 }
-
-/* إعدادات الشاشات الأصغر من 600px */
-@media (max-width: 600px) {
-  .hero-title {
-    font-size: 22px; /* تقليل حجم الخط أكثر على الشاشات الصغيرة */
-  }
-
-  .f-media {
-    height: 150px; /* تقليل حجم الصورة داخل الكرت */
-  }
-
-  .modal-content {
-    width: 95%; /* زيادة العرض ليشمل نسبة أكبر من الشاشة */
-    padding: 15px; /* تقليل الحشو بشكل أكبر */
-  }
-
-  .m-img-side img {
-    height: auto; /* تعديل حجم الصورة ليتناسب مع الشاشة */
-    object-fit: contain; /* الحفاظ على أبعاد الصورة الصحيحة */
-  }
-
-  .tile {
-    max-width: 100%; /* التأكد من أن الكرت يأخذ عرض الشاشة بالكامل */
-  }
-
-  .tile-media {
-    height: 150px; /* تقليل ارتفاع الصورة داخل الكرت */
-  }
-
-  .f-btn {
-    padding: 8px 16px; /* تقليل حجم الأزرار */
-  }
-}
-
-
       `}</style>
     </div>
   );
