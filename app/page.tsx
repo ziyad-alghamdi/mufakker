@@ -54,10 +54,17 @@ export default function LandingPage() {
             مجتمع تفاعلي يجمع العقول النيرة لتبادل الأفكار، صقل المهارات، والمشاركة في مسارات تطبيقية وورش عمل مصممة خصيصاً لتنمية تفكيرك.
           </p>
 
+          {/* الزر الجديد المضاف */}
+          <div className="main-join-action">
+             <Link href="/signup" className="btn-join-community">
+                سجل معنا وانضم إلى مجتمع المفكِّـرين
+             </Link>
+          </div>
+
           <div className="hero-actions">
             <Link href="/login" className="btn-primary">
               ابدأ رحلتك الآن
-              <svg xmlns="http://www.w3.org/Form/2000/svg" className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
               </svg>
@@ -87,6 +94,7 @@ export default function LandingPage() {
       </main>
 
       <style jsx global>{`
+        /* ... الأكواد السابقة كما هي ... */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 
         :root {
@@ -302,6 +310,32 @@ export default function LandingPage() {
           align-items: center;
         }
 
+        /* تنسيق الزر الجديد */
+        .main-join-action {
+          margin-bottom: 32px;
+          animation: fadeUp 0.8s ease-out 0.5s both;
+        }
+
+        .btn-join-community {
+          display: inline-block;
+          padding: 12px 32px;
+          background: rgba(71, 214, 173, 0.1);
+          border: 2px solid var(--primary);
+          color: var(--primary);
+          text-decoration: none;
+          border-radius: 50px;
+          font-weight: 700;
+          font-size: 18px;
+          transition: all 0.4s ease;
+        }
+
+        .btn-join-community:hover {
+          background: var(--primary);
+          color: var(--bg-dark);
+          box-shadow: 0 0 30px rgba(71, 214, 173, 0.4);
+          transform: scale(1.05);
+        }
+
         .badge-wrapper {
           margin-bottom: 32px;
           animation: fadeDown 0.8s ease-out;
@@ -470,7 +504,7 @@ export default function LandingPage() {
         @media (max-width: 768px) {
           .nav-content { padding: 0 16px; }
           .nav-links { gap: 16px; }
-          .nav-btn { display: none; } /* Hide sign up button on small screens to save space */
+          .nav-btn { display: none; }
           
           .hero { padding: 100px 16px 40px; }
           .hero-actions { 

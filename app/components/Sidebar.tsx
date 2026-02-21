@@ -28,14 +28,18 @@ export default function Sidebar() {
     fetchUserRole();
   }, []);
 
-  // وظيفة لتبديل حالة السايد بار (فتح/إغلاق) عند الضغط على نفس الزر
   const toggleSidebar = () => {
     setOpen(!open);
   };
 
+  // --- هنا أضفنا وظيفة تسجيل الخروج الجديدة ---
+  const handleLogout = async () => {
+    await supabase.auth.signOut(); // ينهي الجلسة في سوبابيز
+    setOpen(false); // يغلق السايد بار
+  };
+
   const links = [
     { name: "حسابي الشخصي", href: "/dashboard" },
-    //{ name: "شهـاداتي", href: "/certificates" },
     { name: "من نحن", href: "/about" },
     { name: "الورش والدورات", href: "/courses" },
     { name: "المشاركة والهاكاثونات", href: "/events" },
@@ -43,12 +47,10 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* تم تغيير onClick لتنفيذ وظيفة التبديل toggleSidebar */}
       <button className={`sidebar-toggle ${open ? "is-open" : ""}`} onClick={toggleSidebar}>
         <span className="burger-icon">{open ? "✕" : "☰"}</span>
       </button>
 
-      {/* الإغلاق عند الضغط خارج السايد بار (Overlay) */}
       {open && <div className="overlay" onClick={() => setOpen(false)} />}
 
       <aside className={`sidebar ${open ? "open" : ""}`}>
@@ -95,7 +97,8 @@ export default function Sidebar() {
           </nav>
 
           <div className="sidebar-footer">
-            <Link href="http://localhost:3000" className="logout-link" onClick={() => setOpen(false)}>
+            {/* تم تحديث الرابط هنا ليستخدم handleLogout */}
+            <Link href="/" className="logout-link" onClick={handleLogout}>
               <span>تسجيل الخروج</span>
             </Link>
           </div>
@@ -103,6 +106,7 @@ export default function Sidebar() {
       </aside>
 
       <style jsx global>{`
+        /* ... تبقى كل التنسيقات (CSS) كما هي بدون تغيير ... */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
         .sidebar-toggle {
@@ -128,9 +132,8 @@ export default function Sidebar() {
           -webkit-tap-highlight-color: transparent;
         }
 
-        /* تغيير شكل الزر عند الفتح ليبرز أكثر أو يتغير لونه */
         .sidebar-toggle.is-open {
-          background: #ef4444; /* لون أحمر خفيف عند الإغلاق أو يمكن تركه كما هو */
+          background: #ef4444;
           transform: rotate(90deg);
         }
 
@@ -172,7 +175,6 @@ export default function Sidebar() {
           flex-direction: column;
         }
 
-        /* ... باقي التنسيقات (Scrollbar, Logo, Nav, الخ) تبقى كما هي ... */
         .sidebar-scrollable-content::-webkit-scrollbar { width: 5px; }
         .sidebar-scrollable-content::-webkit-scrollbar-thumb { background: rgba(71, 214, 173, 0.2); border-radius: 10px; }
 
