@@ -80,9 +80,9 @@ export default function AdminDashboard() {
             <div className="btn-text">إدارة الفعاليات</div>
           </a>
 
-          <a href="/admin/users" className="dashboard-btn">
+          <a href="/admin/addCertificate" className="dashboard-btn">
             <div className="btn-icon">👥</div>
-            <div className="btn-text">إدارة المستخدمين</div>
+            <div className="btn-text">إدارة الشهايد</div>
           </a>
 
           <a href="/admin/registrations" className="dashboard-btn">
@@ -224,6 +224,7 @@ export default function AdminDashboard() {
             font-size: 18px;
           }
         }
+          
       `}</style>
     </div>
   );

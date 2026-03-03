@@ -1,260 +1,251 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import Sidebar from "../components/Sidebar";
 import BackButton from "../components/BackButton";
 
-export default function MyCertificates() {
-  const [certs, setCerts] = useState<any[]>([]);
-  const [filtered, setFiltered] = useState<any[]>([]);
-  const [selectedType, setSelectedType] = useState("all");
+export default function UserCertificates() {
+  const [certificates, setCertificates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const TYPES = [
-    { id: "all", label: "الكل" },
-    { id: "course", label: "دورات" },
-    { id: "workshop", label: "ورش عمل" },
-    { id: "achievement", label: "مشاركات وإنجازات" },
-    { id: "event", label: "فعاليات" },
-    { id: "organizing", label: "تنظيم" }
-  ];
-
   useEffect(() => {
-    loadCertificates();
+    loadUserData();
   }, []);
 
-  async function loadCertificates() {
+  async function loadUserData() {
     const { data: userData } = await supabase.auth.getUser();
-    if (!userData.user) return;
-
-    const { data } = await supabase
-      .from("certificates")
-      .select("*")
-      .eq("user_id", userData.user.id)
-      .order("created_at", { ascending: false });
-
-    setCerts(data || []);
-    setFiltered(data || []);
-    setLoading(false);
-  }
-
-  function filterByType(type: string) {
-    setSelectedType(type);
-
-    if (type === "all") {
-      setFiltered(certs);
+    if (userData?.user) {
+      loadUserCertificates(userData.user.id);
     } else {
-      setFiltered(certs.filter((c) => c.type === type));
+      setLoading(false);
     }
   }
 
+  async function loadUserCertificates(userId: string) {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("certificate_b")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("status", "مكتمل");
+
+    if (!error) setCertificates(data || []);
+    setLoading(false);
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loader"></div>
+        <p>جاري استحضار إنجازاتك...</p>
+        <style jsx>{`
+          .loading-screen { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #031c26; color: #47d6ad; font-family: 'Cairo'; }
+          .loader { width: 50px; height: 50px; border: 3px solid rgba(71, 214, 173, 0.1); border-top-color: #47d6ad; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+          @keyframes spin { to { transform: rotate(360deg); } }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
-    <div className="page">
+    <div className="certificates-page">
+      {/* الخلفية المتحركة الموحدة */}
+      <div className="animated-bg">
+        <div className="bg-glow-1"></div>
+        <div className="bg-glow-2"></div>
+      </div>
+
       <Sidebar />
-      <BackButton />
-
-      <div className="content">
-        <h1 className="title">شهاداتي</h1>
-
-        {/* أزرار التصفية */}
-        <div className="filters">
-          {TYPES.map((t) => (
-            <button
-              key={t.id}
-              className={`filter-btn ${selectedType === t.id ? "active" : ""}`}
-              onClick={() => filterByType(t.id)}
-            >
-              {t.label}
-            </button>
-          ))}
+      
+      <div className="main-wrapper">
+        <div className="top-nav-area">
+          <BackButton />
         </div>
 
-        {/* عرض الشهادات */}
-        <div className="list">
-          {loading ? (
-            <p className="loading-text">جاري تحميل الشهادات...</p>
-          ) : filtered.length === 0 ? (
-            <p className="empty-text">لا توجد شهادات حتى الآن.</p>
+        <div className="content-container">
+          <header className="page-header">
+            <div className="header-icon">
+              <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#47D6AD" strokeWidth="1.5">
+                <path d="M22 10L12 5 2 10l10 5 10-5z" />
+                <path d="M6 12v5c3.33 3 6.67 3 10 0v-5" />
+              </svg>
+            </div>
+            <div className="header-text">
+              <h1 className="main-title">سجل الشهادات الرقمية</h1>
+              <p className="sub-title">جميع وثائقك المعتمدة من مجتمع مفكر في مكان واحد</p>
+            </div>
+          </header>
+
+          {certificates.length === 0 ? (
+            <div className="empty-state glass-card">
+              <img src="/empty-cert.svg" alt="No data" className="empty-img" style={{opacity: 0.5, width: '150px'}} />
+              <h3>لا توجد شهادات مكتملة بعد</h3>
+              <p>بمجرد اعتماد شهادتك من قبل الإدارة، ستظهر هنا تلقائياً.</p>
+            </div>
           ) : (
-            filtered.map((c) => (
-              <div className="card" key={c.id}>
-                <h3>{c.title}</h3>
-                <p className="type-label">
-                  النوع: {TYPES.find((t) => t.id === c.type)?.label}
-                </p>
-
-                <span className="date">
-                  📅 {new Date(c.created_at).toLocaleDateString("ar-SA")}
-                </span>
-
-                <a
-                  href={c.file_url}
-                  target="_blank"
-                  className="download"
-                >
-                  تنزيل الشهادة ⬇
-                </a>
-              </div>
-            ))
+            <div className="grid-layout">
+              {certificates.map((cert) => (
+                <div key={cert.id} className="cert-card glass-card">
+                  <div className="cert-status">
+                    <span className="badge">مكتمل</span>
+                  </div>
+                  <div className="cert-info">
+                    <span className="course-label">الدورة التدريبية</span>
+                    <h2 className="course-title">{cert.course_name || "دورة تخصصية"}</h2>
+                  </div>
+                  <div className="cert-footer">
+                    <a 
+                      href={cert.certificate_path} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="btn-download"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{marginLeft: '10px'}}>
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      تحميل الشهادة PDF
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
 
-      {/* CSS موحّد مع الهوية البصرية */}
-      <style jsx>{`
-        .page {
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+        .certificates-page {
           min-height: 100vh;
-          width: 100%;
-          padding: 0;
-          font-family: "Cairo", sans-serif;
-          background: linear-gradient(135deg, #0b2a41 0%, #004e64 100%);
+          background: #031c26;
           color: #eafff9;
-          box-sizing: border-box;
+          font-family: 'Cairo', sans-serif;
           direction: rtl;
+          overflow-x: hidden;
         }
 
-        .content {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 50px 30px;
-          margin-right: 270px;
+        /* الخلفية السينمائية */
+        .animated-bg { position: fixed; inset: 0; z-index: 0; }
+        .bg-glow-1 { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(71, 214, 173, 0.05) 0%, transparent 70%); top: -100px; right: -100px; }
+        .bg-glow-2 { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0, 78, 100, 0.1) 0%, transparent 70%); bottom: -50px; left: -50px; }
+
+        .main-wrapper {
+          position: relative;
+          z-index: 1;
+          margin-right: 280px; /* مسافة للسايد بار */
+          padding: 20px 40px;
         }
 
-        .title {
-          font-size: 40px;
-          font-weight: 900;
-          color: #47d6ad;
-          margin-bottom: 30px;
-          text-align: right;
-        }
-
-        .filters {
+        .top-nav-area {
+          height: 60px;
           display: flex;
-          gap: 12px;
+          align-items: center;
           margin-bottom: 30px;
-          flex-wrap: wrap;
         }
 
-        .filter-btn {
-          padding: 12px 20px;
-          background: rgba(0, 78, 100, 0.5);
-          border: 1px solid rgba(37, 161, 142, 0.3);
-          border-radius: 10px;
-          color: #eafff9;
-          font-weight: 700;
-          font-family: "Cairo", sans-serif;
-          cursor: pointer;
-          transition: all 0.3s ease;
+        .content-container {
+          max-width: 1100px;
+          margin: 0 auto;
         }
 
-        .filter-btn:hover {
-          background: rgba(0, 78, 100, 0.7);
-          border-color: rgba(37, 161, 142, 0.5);
+        /* الرأس */
+        .page-header {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          margin-bottom: 50px;
+          animation: fadeInDown 0.8s ease;
+        }
+        .header-icon {
+          background: rgba(71, 214, 173, 0.1);
+          padding: 15px;
+          border-radius: 20px;
+          border: 1px solid rgba(71, 214, 173, 0.2);
+        }
+        .main-title { font-size: 38px; font-weight: 900; margin: 0; background: linear-gradient(90deg, #fff, #47d6ad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .sub-title { font-size: 18px; color: rgba(234, 255, 249, 0.6); margin-top: 5px; }
+
+        /* البطاقات الزجاجية */
+        .glass-card {
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(15px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 30px;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .filter-btn.active {
-          background: #25a18e;
-          color: #0b2a41;
-          border-color: #25a18e;
-          box-shadow: 0 4px 12px rgba(37, 161, 142, 0.3);
-        }
-
-        .list {
+        /* توزيع الشبكة */
+        .grid-layout {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 24px;
+          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          gap: 25px;
         }
 
-        .card {
-          background: rgba(0, 78, 100, 0.5);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(37, 161, 142, 0.3);
-          border-radius: 16px;
-          padding: 24px;
-          transition: all 0.3s ease;
+        .cert-card {
+          padding: 30px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 240px;
+          position: relative;
+          overflow: hidden;
+        }
+        .cert-card:hover {
+          transform: translateY(-10px);
+          border-color: rgba(71, 214, 173, 0.4);
+          background: rgba(255, 255, 255, 0.05);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
-        .card:hover {
-          transform: translateY(-4px);
-          border-color: rgba(71, 214, 173, 0.6);
-          box-shadow: 0 8px 24px rgba(71, 214, 173, 0.15);
-        }
-
-        h3 {
-          font-size: 22px;
-          margin-bottom: 12px;
+        .badge {
+          background: rgba(71, 214, 173, 0.15);
           color: #47d6ad;
+          padding: 6px 15px;
+          border-radius: 12px;
+          font-size: 12px;
           font-weight: 700;
-          text-align: right;
+          border: 1px solid rgba(71, 214, 173, 0.3);
         }
 
-        .type-label {
-          font-size: 15px;
-          color: #eafff9;
-          margin-bottom: 12px;
-          opacity: 0.9;
-          text-align: right;
-        }
+        .course-label { font-size: 12px; color: #47d6ad; text-transform: uppercase; letter-spacing: 1px; }
+        .course-title { font-size: 22px; font-weight: 800; margin-top: 8px; line-height: 1.4; }
 
-        .date {
-          display: inline-block;
-          margin-bottom: 16px;
-          padding: 8px 16px;
-          background: rgba(37, 161, 142, 0.2);
-          border-radius: 10px;
-          color: #47d6ad;
-          font-weight: 700;
-          font-size: 14px;
-        }
-
-        .download {
-          display: block;
-          margin-top: 12px;
-          background: #25a18e;
-          padding: 14px;
-          text-align: center;
-          border-radius: 10px;
-          color: white;
-          font-weight: 700;
-          text-decoration: none;
-          transition: all 0.3s ease;
-          font-size: 16px;
-        }
-
-        .download:hover {
+        .btn-download {
+          width: 100%;
           background: #47d6ad;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(37, 161, 142, 0.3);
+          color: #031c26;
+          text-decoration: none;
+          padding: 14px;
+          border-radius: 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          transition: 0.3s;
+        }
+        .btn-download:hover { background: #fff; transform: scale(1.02); }
+
+        .empty-state {
+          padding: 80px;
+          text-align: center;
+          border: 2px dashed rgba(71, 214, 173, 0.2);
         }
 
-        .loading-text,
-        .empty-text {
-          color: #eafff9;
-          font-size: 18px;
-          text-align: right;
+        @keyframes fadeInDown {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive */
-        @media (max-width: 1100px) {
-          .content {
-            margin-right: 0;
-            padding: 40px 20px;
-          }
+        @media (max-width: 1200px) {
+          .main-wrapper { margin-right: 0; padding-top: 100px; }
         }
-
         @media (max-width: 768px) {
-          .content {
-            padding: 30px 16px;
-          }
-
-          .title {
-            font-size: 32px;
-          }
-
-          .list {
-            grid-template-columns: 1fr;
-          }
+          .main-title { font-size: 28px; }
+          .grid-layout { grid-template-columns: 1fr; }
         }
       `}</style>
     </div>

@@ -170,6 +170,7 @@ if (loading)
         <p className="desc">إليك نظرة عامة على ملفك الشخصي الأكاديمي والمهني داخل مجتمع مفكر.</p>
 
         <div className="cards-container">
+          
           {/* بطاقة المعلومات الأساسية */}
           <div className="card glass-card">
             <div className="card-icon">
@@ -252,6 +253,28 @@ if (loading)
               </p>
             )}
           </div>
+          {/* بطاقة الشهادات الجديدة */}
+<div className="card glass-card certificate-card" onClick={() => window.location.href = "/certificates"}>
+  <div className="card-icon">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#47D6AD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="7"></circle>
+      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+    </svg>
+  </div>
+  <h3>شهاداتي المعتمدة</h3>
+  <p className="skills-display">استعرض وحمّل جميع الشهادات التي حصلت عليها خلال مسيرتك في مفكر.</p>
+  
+  {/* الزر الجديد الواضح */}
+  <div className="card-button-wrapper">
+    <button className="btn-view-certificates">
+      عرض الشهادات
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}>
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    </button>
+  </div>
+</div>
         </div>
       </div>
 
@@ -373,6 +396,44 @@ if (loading)
           .content { padding: 80px 20px; }
           .glass-card { padding: 25px; }
         }
+          /* حاوية الزر لضمان التموضع */
+.card-button-wrapper {
+  margin-top: 25px;
+}
+
+/* تصميم الزر الواضح */
+.btn-view-certificates {
+  width: 100%;
+  background: rgba(71, 214, 173, 0.1);
+  color: #47d6ad;
+  border: 2px solid #47d6ad;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Cairo', sans-serif;
+}
+
+/* تأثير عند تمرير الماوس على البطاقة أو الزر */
+.certificate-card:hover .btn-view-certificates {
+  background: #47d6ad;
+  color: #031c26;
+  box-shadow: 0 8px 20px rgba(71, 214, 173, 0.3);
+}
+
+/* حركة بسيطة للسهم داخل الزر */
+.btn-view-certificates svg {
+  transition: transform 0.3s ease;
+}
+
+.certificate-card:hover .btn-view-certificates svg {
+  transform: translateX(-5px); /* السهم يتجه لليمين قليلاً عند الحوم لأن الاتجاه RTL */
+}
       `}</style>
     </div>
   );
