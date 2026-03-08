@@ -31,7 +31,8 @@ export default function EventsPage() {
   const [useProfileSkills, setUseProfileSkills] = useState<"yes" | "no" | null>(null);
   const [skillsText, setSkillsText] = useState("");
   const [profileSkills, setProfileSkills] = useState("");
-
+  const [hasOldAttempts, setHasOldAttempts] = useState<"yes" | "no" | null>(null);
+const [oldAttemptsText, setOldAttemptsText] = useState("");
 
   
   // ✅ مودال التفاصيل
@@ -168,6 +169,7 @@ async function submitRegistration(eventId: number) {
       status: "pending",
       idea: hasIdea === "yes" ? ideaText : null,
       skills: skillsText,
+      old_attempts: hasOldAttempts === "yes" ? oldAttemptsText : null,
     },
   ]);
 
@@ -584,6 +586,38 @@ if (loading)
                       />
                     )}
 
+                    <h4 className="idea-title" style={{ marginTop: "20px" }}>
+هل لديك محاولات سابقة في الهاكاثونات؟
+</h4>
+
+<div className="idea-options">
+  <button
+    className={`idea-btn ${hasOldAttempts === "yes" ? "active" : ""}`}
+    onClick={() => setHasOldAttempts("yes")}
+  >
+    نعم
+  </button>
+
+  <button
+    className={`idea-btn ${hasOldAttempts === "no" ? "active" : ""}`}
+    onClick={() => {
+      setHasOldAttempts("no");
+      setOldAttemptsText("");
+    }}
+  >
+    لا
+  </button>
+</div>
+
+{hasOldAttempts === "yes" && (
+  <textarea
+    className="idea-textarea"
+    placeholder="اكتب محاولاتك السابقة..."
+    value={oldAttemptsText}
+    onChange={(e) => setOldAttemptsText(e.target.value)}
+  />
+)}
+
                     {/* ===== المهارات ===== */}
                     <h4 className="idea-title" style={{ marginTop: "20px" }}>
                       هل تريد استخدام المهارات الموجودة في ملفك الشخصي؟
@@ -623,10 +657,11 @@ if (loading)
                     <button
                       className="btn-primary"
                       disabled={
-                        submitting ||
-                        (hasIdea === "yes" && !ideaText.trim()) ||
-                        !skillsText.trim()
-                      }
+  submitting ||
+  (hasIdea === "yes" && !ideaText.trim()) ||
+  !skillsText.trim() ||
+  (hasOldAttempts === "yes" && !oldAttemptsText.trim())
+}
                       onClick={() => submitRegistration(selected!.id)}
                     >
                       {submitting ? "جاري الإرسال..." : "تأكيد التسجيل"}
