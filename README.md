@@ -4,6 +4,10 @@
 
 Mufakker is a modern web platform designed to support a technology-focused community by providing a centralized environment for managing educational programs, workshops, events, registrations, and users.
 
+The platform is fully deployed and publicly accessible online.
+
+🌐 Live Website: https://mufakker.com
+
 The platform includes a public-facing website for users and a dedicated administration dashboard that allows authorized administrators to manage the platform's content and activities.
 
 ## Key Features
