@@ -60,6 +60,95 @@ The application integrates the frontend, server-side functionality, authenticati
 
 Supabase provides the database and authentication infrastructure, while Next.js manages the application interface and server-side logic.
 
+## Database Architecture
+
+Mufakker uses **Supabase** as its backend platform, providing PostgreSQL database services, authentication, and file storage.
+
+The database is structured around users, training courses, events, workshops, and their associated registrations.
+
+```text
+                    ┌─────────────────┐
+                    │  Supabase Auth  │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │      users      │
+                    ├─────────────────┤
+                    │ id              │
+                    │ full_name_ar    │
+                    │ full_name_en    │
+                    │ email           │
+                    │ phone           │
+                    │ university      │
+                    │ skills          │
+                    └───────┬─────────┘
+                            │
+              ┌─────────────┴─────────────┐
+              │                           │
+              ▼                           ▼
+┌────────────────────────┐   ┌────────────────────────┐
+│ course_registrations   │   │ event_registrations    │
+├────────────────────────┤   ├────────────────────────┤
+│ id                     │   │ id                     │
+│ user_id                │   │ user_id                │
+│ course_id              │   │ event_id               │
+│ status                 │   │ status                 │
+│ name_ar                │   │ idea                   │
+│ name_en                │   │ skills                 │
+│ phone                  │   │ old_attempts           │
+│ email                  │   │ created_at             │
+│ university             │   └───────────┬────────────┘
+└────────────┬───────────┘               │
+             │                           │
+             ▼                           ▼
+     ┌───────────────┐           ┌───────────────┐
+     │    courses    │           │    events     │
+     ├───────────────┤           ├───────────────┤
+     │ id            │           │ id            │
+     │ title         │           │ title         │
+     │ description   │           │ description   │
+     │ date          │           │ date          │
+     │ location      │           │ location      │
+     │ image_url     │           │ image_url     │
+     │ featured      │           │ featured      │
+     └───────────────┘           └───────────────┘
+
+                    ┌─────────────────────┐
+                    │      workshops      │
+                    ├─────────────────────┤
+                    │ id                  │
+                    │ title               │
+                    │ description         │
+                    │ date                │
+                    │ image_url           │
+                    │ certificate_type    │
+                    │ certificate_template│
+                    └─────────────────────┘
+```
+
+### Data Relationships
+
+- A user can register for multiple courses.
+- A course can have multiple registrations.
+- A user can register for multiple events.
+- An event can have multiple registrations.
+- Registration records maintain their own status to support administrative approval and rejection workflows.
+- Event registrations can store participant ideas, skills, and previous attempts.
+- User skills are stored in the user profile and can be reused during event registration.
+
+### Authentication & Data Security
+
+Authentication is handled through **Supabase Auth**.
+
+User profile records are associated with authenticated user IDs, and Row Level Security (RLS) is used to restrict profile updates so authenticated users can update their own information.
+
+### Storage Architecture
+
+Mufakker also uses **Supabase Storage** for managing application files, including event images, workshop images, certificate templates, and certificate-related assets.
+
+This architecture combines authentication, relational data, registration workflows, and file storage within a unified backend platform.
+
 ## Admin Dashboard
 
 The administration dashboard provides a centralized interface for managing the platform.
